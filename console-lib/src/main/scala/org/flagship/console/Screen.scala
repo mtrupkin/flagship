@@ -1,26 +1,39 @@
 package org.flagship.console
 
-
 /**
  * User: mtrupkin
  * Date: 7/5/13
  */
 class Screen(val size: Size) {
-  var cursorPosition: Position = null
-  val visibleScreen = ofDim[ScreenCharacter](size.height, size.width)
-  val backBuffer = ofDim[ScreenCharacter](size.height, size.width)
+  var fg = Color.White
+  var bg = Color.Black
+  var cursor = Position(0, 0)
+  val buffer = Array.ofDim[ScreenCharacter](size.height, size.width)
+  val backBuffer = Array.ofDim[ScreenCharacter](size.height, size.width)
 
   def clear = {
-    val background: ScreenCharacter = new ScreenCharacter(' ')
-
-    visibleScreen.foreach(_ = background)
+    for {
+      i <- buffer.indices
+      j <- buffer(i).indices
+    } buffer(i)(j) = ScreenCharacter(' ')
   }
 
-  def move(x: Int, y: Int)
-  def write(c: Char)
-  def write(s: String)
-  def foreground(c: Color)
-  def background(c: Color)
-  def display()
-  def display(x: Int, y: Int, screen: Screen)
+  def move(x: Int, y: Int): Unit = {
+    cursor = Position(x, y)
+  }
+
+  def write(c: Char): Unit = {
+    buffer(cursor.x)(cursor.y) = ScreenCharacter(c, fg, bg)
+  }
+
+  def write(s: String): Unit = {
+    buffer(cursor.x)(cursor.y) = ScreenCharacter(s.charAt(0), fg, bg)
+  }
+
+  def display(x: Int, y: Int, screen: Screen): Unit = {
+  }
+}
+
+object Screen {
+  def apply(size: Size) = new Screen(size)
 }

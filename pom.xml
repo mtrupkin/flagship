@@ -26,6 +26,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <scala.version>2.10.2</scala.version>
         <java.level>1.6</java.level>
+        <flagship.version>1.0-SNAPSHOT</flagship.version>
     </properties>
 
 	<dependencies>
@@ -44,6 +45,18 @@
             <artifactId>junit</artifactId>
             <version>4.11</version>
             <scope>test</scope>
+        </dependency>
+
+        <!-- flagship api -->
+        <dependency>
+            <groupId>org.flagship</groupId>
+            <artifactId>console-lib</artifactId>
+            <version>${flagship.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.flagship</groupId>
+            <artifactId>flagship</artifactId>
+            <version>${flagship.version}</version>
         </dependency>
 
         <!-- text gui -->

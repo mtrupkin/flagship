@@ -22,6 +22,12 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- flagship api -->
+        <dependency>
+            <groupId>org.flagship</groupId>
+            <artifactId>console-lib</artifactId>
+        </dependency>
+
         <!-- text gui -->
         <dependency>
             <groupId>com.googlecode.lanterna</groupId>

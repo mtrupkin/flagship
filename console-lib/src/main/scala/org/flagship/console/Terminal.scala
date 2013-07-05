@@ -5,9 +5,12 @@ package org.flagship.console
  * Date: 7/5/13
  */
 trait Terminal {
-  def clearScreen
-  def moveCursor(x: Int, y: Int)
-  def putCharacter(c: Char)
-  def applyForegroundColor(r: Int, g: Int, b: Int)
-  def applyBackgroundColor(r: Int, g: Int, b: Int)
+  val size: Size
+
+  var fg: Color
+  var bg: Color
+
+  def display()
+  def clearScreen()
+  def putCharacter(x: Int, y: Int, c: Char)
 }
