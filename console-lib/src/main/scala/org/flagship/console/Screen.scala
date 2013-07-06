@@ -9,28 +9,29 @@ class Screen(val size: Size) {
   var bg = Color.Black
   var cursor = Position(0, 0)
   val buffer = Array.ofDim[ScreenCharacter](size.height, size.width)
-  val backBuffer = Array.ofDim[ScreenCharacter](size.height, size.width)
 
-  def clear = {
+  clear()
+
+  def clear() = {
     for {
       i <- buffer.indices
       j <- buffer(i).indices
     } buffer(i)(j) = ScreenCharacter(' ')
   }
 
-  def move(x: Int, y: Int): Unit = {
+  def move(x: Int, y: Int) = {
     cursor = Position(x, y)
   }
 
-  def write(c: Char): Unit = {
+  def write(c: Char) = {
     buffer(cursor.x)(cursor.y) = ScreenCharacter(c, fg, bg)
   }
 
-  def write(s: String): Unit = {
+  def write(s: String) = {
     buffer(cursor.x)(cursor.y) = ScreenCharacter(s.charAt(0), fg, bg)
   }
 
-  def display(x: Int, y: Int, screen: Screen): Unit = {
+  def display(x: Int, y: Int, screen: Screen) = {
   }
 }
 

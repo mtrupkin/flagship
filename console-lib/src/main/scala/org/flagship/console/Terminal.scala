@@ -5,12 +5,13 @@ package org.flagship.console
  * Date: 7/5/13
  */
 trait Terminal {
-  val size: Size
+  val terminalSize: Size
 
-  var fg: Color
-  var bg: Color
+  var fg = Color.White
+  var bg = Color.Black
+  var closed = false
 
-  def display()
   def clearScreen()
   def putCharacter(x: Int, y: Int, c: Char)
+  def flush()
 }

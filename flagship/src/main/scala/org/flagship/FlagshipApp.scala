@@ -36,5 +36,6 @@ object FlagshipApp extends App {
   })
 
   gui.showWindow(window)
+  gui.doEventLoop()
 
 }
