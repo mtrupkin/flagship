@@ -1,6 +1,5 @@
 package org.flagship.console
 
-import scala.collection.mutable
 
 /**
  * User: mtrupkin
@@ -16,6 +15,8 @@ class GUIConsole(val terminal: Terminal) {
 
   def completed(): Boolean = { terminal.closed }
 
+  var consoleKey: ConsoleKey = null
+
   def flush() = {
     controls.foreach(c => c.render(screen))
 
@@ -26,6 +27,14 @@ class GUIConsole(val terminal: Terminal) {
     } terminal.putCharacter(i, j, buffer(i)(j).c)
 
     terminal.flush()
+    if (terminal.key() != consoleKey) {
+      consoleKey = terminal.key()
+      if (consoleKey != null) {
+        println("key pressed: " + consoleKey.keyValue)
+      } else {
+        println("key released")
+      }
+    }
   }
 
   def showWindow(window: Window) = {
@@ -46,5 +55,4 @@ class GUIConsole(val terminal: Terminal) {
       }
     }
   }
-
 }

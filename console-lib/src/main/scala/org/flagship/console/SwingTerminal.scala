@@ -6,7 +6,7 @@ import java.awt.image.BufferStrategy
 import java.awt._
 import scala.swing.{BorderPanel, Frame}
 import scala.swing.event.{KeyReleased, Key, KeyPressed}
-import java.awt.event.{KeyEvent, KeyAdapter}
+import java.awt.event.{MouseEvent, MouseAdapter, KeyEvent, KeyAdapter}
 
 
 /**
@@ -16,32 +16,35 @@ import java.awt.event.{KeyEvent, KeyAdapter}
 class SwingTerminal(val terminalSize: Size = new Size(100, 40)) extends Frame with Terminal {
   val terminalCanvas = new TerminalCanvas(terminalSize)
   val normalTextFont = new Font("Courier New", Font.PLAIN, 14)
-  val buffer = Array.ofDim[ScreenCharacter](terminalSize.width, terminalSize.height)
+  //val buffer = Array.ofDim[ScreenCharacter](terminalSize.width, terminalSize.height)
   var consoleKey: ConsoleKey = null
 
   ignoreRepaint = true
   peer.add(terminalCanvas)
-  peer.addKeyListener(new KeyAdapter {
+
+  terminalCanvas.addKeyListener(new KeyAdapter {
     override def keyPressed(e: KeyEvent) {
-      println("key pressed: " + e.getKeyChar)
       val modifiers = new ConsoleKeyModifier(e.isShiftDown, e.isAltDown, e.isControlDown)
       consoleKey = new ConsoleKey( Key(e.getKeyCode),modifiers )
+    }
 
+    override def keyReleased(e: KeyEvent) {
+      consoleKey = null
     }
   })
-
-
-
 
 //  addKeyListener(new KeyAdapter {
 //    override def keyTyped(e: KeyEvent) {}
 //  })
 //
-//  val mouseAdapter = new MouseAdapter {
-//  }
-//  addMouseListener(mouseAdapter)
-//  addMouseMotionListener(mouseAdapter)
-//
+  val mouseAdapter = new MouseAdapter {
+    override def mouseMoved(e: MouseEvent) {
+      //println(e.getX, e.getY)
+    }
+  }
+  terminalCanvas.addMouseListener(mouseAdapter)
+  terminalCanvas.addMouseMotionListener(mouseAdapter)
+
 
   pack()
   override def closeOperation( ) {

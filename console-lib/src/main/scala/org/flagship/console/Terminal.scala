@@ -7,6 +7,8 @@ package org.flagship.console
 trait Terminal {
   val terminalSize: Size
 
+  val buffer = Array.ofDim[ScreenCharacter](terminalSize.width, terminalSize.height)
+
   var fg = Color.White
   var bg = Color.Black
   var closed = false

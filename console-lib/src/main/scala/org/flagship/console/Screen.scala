@@ -4,11 +4,11 @@ package org.flagship.console
  * User: mtrupkin
  * Date: 7/5/13
  */
-class Screen(val size: Size) extends Size(size.width, size.height){
+class Screen(val size: Size){
   var fg = Color.White
   var bg = Color.Black
   var cursor = Position(0, 0)
-  val buffer = Array.ofDim[ScreenCharacter](width, height)
+  val buffer = Array.ofDim[ScreenCharacter](size.width, size.height)
 
 
   clear()

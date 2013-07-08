@@ -7,6 +7,7 @@ package org.flagship.console
 class Window extends Control {
   def render(s: Screen) {
     import s._
+    import s.size._
 
     // corners
     write(0, 0, ACS.ULCORNER)
