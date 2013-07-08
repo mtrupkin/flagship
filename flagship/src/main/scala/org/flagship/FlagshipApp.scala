@@ -35,7 +35,7 @@ object FlagshipApp extends App {
     }
   })
 
-  gui.showWindow(window)
+  gui.showWindow(new org.flagship.console.Window())
   gui.doEventLoop()
 
 }

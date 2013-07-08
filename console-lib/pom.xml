@@ -21,6 +21,12 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- gui -->
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-swing</artifactId>
+        </dependency>
+
         <!-- text gui -->
         <dependency>
             <groupId>com.googlecode.lanterna</groupId>

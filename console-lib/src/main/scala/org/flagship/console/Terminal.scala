@@ -13,5 +13,7 @@ trait Terminal {
 
   def clearScreen()
   def putCharacter(x: Int, y: Int, c: Char)
+  def key(): ConsoleKey
+
   def flush()
 }

@@ -1,19 +1,24 @@
 package org.flagship.console
 
+import scala.collection.mutable
+
 /**
  * User: mtrupkin
  * Date: 7/5/13
  */
 class GUIConsole(val terminal: Terminal) {
-  val framesPerSecond = 24
-
+  val framesPerSecond = 23
   val refreshRate = (1f / framesPerSecond) * 1000
 
   val screen = Screen(terminal.terminalSize)
 
-  def completed() = { terminal.closed }
+  var controls = List[Control]()
+
+  def completed(): Boolean = { terminal.closed }
 
   def flush() = {
+    controls.foreach(c => c.render(screen))
+
     val buffer = screen.buffer
     for {
       i <- buffer.indices
@@ -23,7 +28,8 @@ class GUIConsole(val terminal: Terminal) {
     terminal.flush()
   }
 
-  def showWindow(window: com.googlecode.lanterna.gui.Window) = {
+  def showWindow(window: Window) = {
+    controls = window :: controls
   }
 
   def doEventLoop() = {

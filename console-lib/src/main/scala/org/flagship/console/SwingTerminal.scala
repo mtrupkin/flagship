@@ -1,44 +1,60 @@
 package org.flagship.console
 
-import javax.swing.{WindowConstants, JFrame}
-import java.awt._
-import java.awt.event._
+import javax.swing.{WindowConstants}
+
 import java.awt.image.BufferStrategy
+import java.awt._
+import scala.swing.{BorderPanel, Frame}
+import scala.swing.event.{KeyReleased, Key, KeyPressed}
+import java.awt.event.{KeyEvent, KeyAdapter}
+
 
 /**
  * User: mtrupkin
  * Date: 7/5/13
  */
-class SwingTerminal(val terminalSize: Size = new Size(100, 40)) extends JFrame("Flagship") with Terminal {
+class SwingTerminal(val terminalSize: Size = new Size(100, 40)) extends Frame with Terminal {
   val terminalCanvas = new TerminalCanvas(terminalSize)
+  val normalTextFont = new Font("Courier New", Font.PLAIN, 14)
+  val buffer = Array.ofDim[ScreenCharacter](terminalSize.width, terminalSize.height)
+  var consoleKey: ConsoleKey = null
 
-  //var fg: Color = Color.White
-  //var bg: Color = Color.Black
+  ignoreRepaint = true
+  peer.add(terminalCanvas)
+  peer.addKeyListener(new KeyAdapter {
+    override def keyPressed(e: KeyEvent) {
+      println("key pressed: " + e.getKeyChar)
+      val modifiers = new ConsoleKeyModifier(e.isShiftDown, e.isAltDown, e.isControlDown)
+      consoleKey = new ConsoleKey( Key(e.getKeyCode),modifiers )
 
-  setIgnoreRepaint(true)
-  getContentPane().setLayout(new BorderLayout())
-  getContentPane().add(terminalCanvas, BorderLayout.CENTER)
-
-
-  addKeyListener(new KeyListener {
-    def keyTyped(e: KeyEvent) {}
-
-    def keyPressed(e: KeyEvent) {}
-
-    def keyReleased(e: KeyEvent) {}
-  })
-  addWindowListener(new WindowAdapter {
-    override def windowClosed(e: WindowEvent) {
-      closed = true
     }
   })
 
+
+
+
+//  addKeyListener(new KeyAdapter {
+//    override def keyTyped(e: KeyEvent) {}
+//  })
+//
+//  val mouseAdapter = new MouseAdapter {
+//  }
+//  addMouseListener(mouseAdapter)
+//  addMouseMotionListener(mouseAdapter)
+//
+
   pack()
-  setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
-  setLocationByPlatform(true)
-  setVisible(true)
-  setFocusTraversalKeysEnabled(false)
-  setResizable(false)
+  override def closeOperation( ) {
+    closed = true
+    visible = false
+    dispose()
+  }
+  //closeOperation()
+  //peer.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
+  //setLocationByPlatform(true)
+  visible = true
+  //setFocusTraversalKeysEnabled(false)
+  resizable = false
   pack()
   terminalCanvas.init()
 
@@ -46,6 +62,7 @@ class SwingTerminal(val terminalSize: Size = new Size(100, 40)) extends JFrame("
   }
 
   def putCharacter(x: Int, y: Int, c: Char) = {
+    buffer(x)(y) = ScreenCharacter(c, fg, bg)
   }
 
   def flush() {
@@ -53,60 +70,89 @@ class SwingTerminal(val terminalSize: Size = new Size(100, 40)) extends JFrame("
       terminalCanvas.flush()
     }
   }
-}
 
-class TerminalCanvas(val terminalSize: Size) extends Canvas {
-  val normalTextFont = new Font("Courier New", Font.PLAIN, 14)
-  setIgnoreRepaint(true)
-
-  def init() = {
-    createBufferStrategy(2)
+  def key() = {
+    consoleKey
   }
+  class TerminalCanvas(val terminalSize: Size) extends Canvas {
 
-  def getGraphics2D(buffer: BufferStrategy): Graphics2D = {
-    val g = buffer.getDrawGraphics
-    g match {
-      case g2: Graphics2D => g2
-      case _ => throw new ClassCastException
-    }
-  }
+    setIgnoreRepaint(true)
 
-  def flush() = {
-    val buffer = getBufferStrategy
-    val g2 = getGraphics2D(buffer)
-    draw(g2)
-
-    if (!buffer.contentsLost()) {
-      buffer.show()
+    def init() = {
+      createBufferStrategy(2)
     }
 
-    g2.dispose()
-  }
+    def getGraphics2D(buffer: BufferStrategy): Graphics2D = {
+      val g = buffer.getDrawGraphics
+      g match {
+        case g2: Graphics2D => g2
+        case _ => throw new ClassCastException
+      }
+    }
 
-  override def getPreferredSize(): Dimension = {
-    val fontMetrics = getGraphics().getFontMetrics(normalTextFont)
-    val screenWidth = terminalSize.width * fontMetrics.charWidth(' ')
-    val screenHeight = terminalSize.height * fontMetrics.getHeight()
-    new Dimension(screenWidth, screenHeight)
-  }
+    def flush() = {
+      val buffer = getBufferStrategy
+      val g2 = getGraphics2D(buffer)
+      draw(g2)
 
+      if (!buffer.contentsLost()) {
+        buffer.show()
+      }
 
-  var lastPaintTime = System.currentTimeMillis()
-  var frameCount = 0
+      g2.dispose()
+    }
 
-  def draw(g2: Graphics2D) = {
-    g2.setColor(java.awt.Color.BLACK)
-    g2.fillRect(0, 0, getPreferredSize().getWidth.toInt, getPreferredSize().getHeight.toInt)
-    g2.setColor(java.awt.Color.WHITE)
+    override def getPreferredSize(): Dimension = {
+      val screenDim = screenSize(charSize(getGraphics()))
+      new Dimension(screenDim.width, screenDim.height)
+    }
 
-    val currentTime = System.currentTimeMillis()
-    val time = currentTime - lastPaintTime
-    lastPaintTime = currentTime
-    frameCount = frameCount + 1
+    def charSize(g: Graphics): Size = {
+      val fontMetrics = g.getFontMetrics(normalTextFont)
+      new Size(fontMetrics.charWidth(' '), fontMetrics.getAscent())
+    }
 
-    g2.drawString(time.toString, 100, 10)
-    g2.drawString(frameCount.toString, 100, 20)
+    def screenSize(charSize: Size): Size = {
+      new Size(terminalSize.width * charSize.width, terminalSize.height * charSize.height)
+    }
 
+    var lastPaintTime = System.currentTimeMillis()
+    var frameCount = 0
 
+    def draw(g2: Graphics2D) = {
+      this.synchronized {
+        val charDim = charSize(g2)
+        val screenDim = screenSize(charDim)
+
+        g2.setColor(java.awt.Color.BLACK)
+        g2.fillRect(0, 0, screenDim.width, screenDim.height)
+
+        g2.setColor(java.awt.Color.WHITE)
+
+        val currentTime = System.currentTimeMillis()
+        val time = currentTime - lastPaintTime
+        lastPaintTime = currentTime
+        frameCount = frameCount + 1
+
+        drawString((1000f/time).toString, 1, 1)
+        drawString(frameCount.toString, 1, 2)
+
+        for {
+          i <- buffer.indices
+          j <- buffer(i).indices
+        } drawScreenCharacter( i, j, buffer(i)(j))
+
+        def drawScreenCharacter(x:Int, y: Int, s: ScreenCharacter) = {
+          drawString(s.c.toString, x, y)
+        }
+
+        def drawString(s: String, x:Int, y: Int) = {
+          g2.drawString(s, x * charDim.width - 3, (y+1) * charDim.height - 3)
+        }
+      }
+    }
   }
 }
+
+
+

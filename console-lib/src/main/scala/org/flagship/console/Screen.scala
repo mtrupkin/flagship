@@ -4,11 +4,12 @@ package org.flagship.console
  * User: mtrupkin
  * Date: 7/5/13
  */
-class Screen(val size: Size) {
+class Screen(val size: Size) extends Size(size.width, size.height){
   var fg = Color.White
   var bg = Color.Black
   var cursor = Position(0, 0)
-  val buffer = Array.ofDim[ScreenCharacter](size.height, size.width)
+  val buffer = Array.ofDim[ScreenCharacter](width, height)
+
 
   clear()
 
@@ -27,6 +28,10 @@ class Screen(val size: Size) {
     buffer(cursor.x)(cursor.y) = ScreenCharacter(c, fg, bg)
   }
 
+  def write(x: Int, y: Int, c: Char) = {
+    buffer(x)(y) = ScreenCharacter(c, fg, bg)
+  }
+
   def write(s: String) = {
     buffer(cursor.x)(cursor.y) = ScreenCharacter(s.charAt(0), fg, bg)
   }
@@ -37,4 +42,10 @@ class Screen(val size: Size) {
 
 object Screen {
   def apply(size: Size) = new Screen(size)
+}
+
+case class ScreenCharacter(val c: Char, val fg: Color, val bg: Color)
+
+object ScreenCharacter {
+  def apply(c: Char) = new ScreenCharacter(c, Color.White, Color.Black)
 }
