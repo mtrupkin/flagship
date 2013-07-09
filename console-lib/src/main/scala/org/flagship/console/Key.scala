@@ -9,6 +9,7 @@ object ConsoleKey extends Enumeration {
   val Control = Value("Control")
   val Alt = Value("Alt")
 }
-case class ConsoleKeyModifier(val shift:Boolean, val control:Boolean, val alt:Boolean)
 
-case class ConsoleKey(val keyValue: scala.swing.event.Key.Value, val modifier:ConsoleKeyModifier)
+case class ConsoleKeyModifier(shift: Boolean, control: Boolean, alt: Boolean)
+
+case class ConsoleKey(keyValue: scala.swing.event.Key.Value, modifier: ConsoleKeyModifier)

@@ -5,53 +5,43 @@ package org.flagship.console
  * User: mtrupkin
  * Date: 7/5/13
  */
-class GUIConsole(val terminal: Terminal) {
+class GUIConsole(val terminal: Terminal, val window: Window) {
   val framesPerSecond = 23
   val refreshRate = (1f / framesPerSecond) * 1000
-
-  val screen = Screen(terminal.terminalSize)
-
-  var controls = List[Control]()
+  val screen = Screen(window.size)
 
   def completed(): Boolean = { terminal.closed }
 
-  var consoleKey: ConsoleKey = null
+  var consoleKey: Option[ConsoleKey] = None
 
-  def flush() = {
-    controls.foreach(c => c.render(screen))
+  def render() = {
+    window.render(screen)
+    terminal.flush(screen)
+  }
 
-    val buffer = screen.buffer
-    for {
-      i <- buffer.indices
-      j <- buffer(i).indices
-    } terminal.putCharacter(i, j, buffer(i)(j).c)
-
-    terminal.flush()
-    if (terminal.key() != consoleKey) {
-      consoleKey = terminal.key()
-      if (consoleKey != null) {
-        println("key pressed: " + consoleKey.keyValue)
+  def processInput() = {
+    if (terminal.key != consoleKey) {
+      consoleKey = terminal.key
+      if (consoleKey != None) {
+        println("key pressed: " + consoleKey.get.keyValue)
       } else {
         println("key released")
       }
     }
   }
 
-  def showWindow(window: Window) = {
-    controls = window :: controls
-  }
-
   def doEventLoop() = {
-
     var lastUpdateTime = System.currentTimeMillis()
 
     while (!completed()) {
       val currentTime = System.currentTimeMillis()
       val elapsedTime = currentTime - lastUpdateTime
 
+
       if (elapsedTime > refreshRate) {
         lastUpdateTime = currentTime
-        flush
+        processInput
+        render
       }
     }
   }
