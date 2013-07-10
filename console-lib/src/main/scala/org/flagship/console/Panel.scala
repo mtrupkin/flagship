@@ -5,5 +5,17 @@ package org.flagship.console
  * Date: 7/8/13
  */
 class Panel extends Composite {
+  def size: Size = {
+    var width = 1
+    var height = 1
 
+    controls.foreach(c => {
+      if (c.width > width)
+        width = c.width
+      if (c.height > height)
+        height = c.height } )
+
+
+    new Size(width, height)
+  }
 }

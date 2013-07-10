@@ -1,8 +1,9 @@
 package org.flagship
 
-import org.flagship.console.{Panel, Size, GUIConsole, SwingTerminal, Window}
+import org.flagship.console._
 import com.googlecode.lanterna.gui.{Border}
-
+import org.flagship.console.Size
+import scala.Some
 
 
 class FlagshipWindowOld extends com.googlecode.lanterna.gui.Window("Flagship") {
@@ -24,6 +25,9 @@ class FlagshipWindow(size: Size) extends Window(size, Some("Flagship Window")) {
   val leftPanel = new Panel()
   val middlePanel = new Panel()
   val rightPanel = new Panel()
+
+  val label = new Label("Test Label")
+  middlePanel.addControl(label)
 
   horizontalPanel.addControl(leftPanel);
   horizontalPanel.addControl(middlePanel);

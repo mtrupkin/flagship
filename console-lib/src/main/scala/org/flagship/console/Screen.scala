@@ -9,6 +9,7 @@ class Screen(val size: Size){
   var fg = Color.White
   var bg = Color.Black
   var cursor = Point(0, 0)
+  var offset = Point(0, 0)
   val buffer = Array.ofDim[ScreenCharacter](size.width, size.height)
 
   clear()
@@ -17,23 +18,31 @@ class Screen(val size: Size){
     for {
       i <- 0 until size.width
       j <- 0 until size.height
-    } buffer(i)(j) = blank
+    } this(i, j) = blank
   }
 
   def apply(x: Int, y: Int): ScreenCharacter = {
-    buffer(x)(y)
+    buffer(x+offset.x)(y+offset.y)
   }
 
   def apply(point: Point): ScreenCharacter = {
-    buffer(point.x)(point.y)
+    this(point.x, point.y)
+  }
+
+  def update(x: Int, y: Int, sc: ScreenCharacter ) {
+    buffer(x+offset.x)(y+offset.y) = sc
+  }
+
+  def update(point: Point, sc: ScreenCharacter) {
+    update(point.x, point.y, sc)
   }
 
   def foreach(f: (Point, ScreenCharacter) => Unit ) {
     for {
       i <- 0 until size.width
       j <- 0 until size.height
-      if (buffer(i)(j) != blank)
-    } f(Point(i, j), buffer(i)(j))
+      if (this(i, j) != blank)
+    } f(Point(i, j), this(i, j))
   }
 
   def move(x: Int, y: Int) {
@@ -41,15 +50,15 @@ class Screen(val size: Size){
   }
 
   def write(c: Char) {
-    buffer(cursor.x)(cursor.y) = ScreenCharacter(c, fg, bg)
+    this(cursor.x, cursor.y) = ScreenCharacter(c, fg, bg)
   }
 
   def write(x: Int, y: Int, c: Char) {
-    buffer(x)(y) = ScreenCharacter(c, fg, bg)
+    this(x, y) = ScreenCharacter(c, fg, bg)
   }
 
   def write(s: String) {
-    buffer(cursor.x)(cursor.y) = ScreenCharacter(s.charAt(0), fg, bg)
+    this(cursor.x, cursor.y) = ScreenCharacter(s.charAt(0), fg, bg)
   }
 
   def write(x: Int, y: Int, s: String) {

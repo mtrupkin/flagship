@@ -10,16 +10,16 @@ class GUIConsole(val terminal: Terminal, val window: Window) {
   val refreshRate = (1f / framesPerSecond) * 1000
   val screen = Screen(window.size)
 
-  def completed(): Boolean = { terminal.closed }
+  def completed(): Boolean = terminal.closed
 
   var consoleKey: Option[ConsoleKey] = None
 
-  def render() = {
+  def render() {
     window.render(screen)
     terminal.flush(screen)
   }
 
-  def processInput() = {
+  def processInput() {
     if (terminal.key != consoleKey) {
       consoleKey = terminal.key
       if (consoleKey != None) {
@@ -30,7 +30,7 @@ class GUIConsole(val terminal: Terminal, val window: Window) {
     }
   }
 
-  def doEventLoop() = {
+  def doEventLoop() {
     var lastUpdateTime = System.currentTimeMillis()
 
     while (!completed()) {
