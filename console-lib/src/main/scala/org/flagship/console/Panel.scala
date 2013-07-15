@@ -5,7 +5,7 @@ package org.flagship.console
  * Date: 7/8/13
  */
 class Panel extends Composite {
-  def size: Size = {
+  def minSize: Size = {
     var width = 1
     var height = 1
 

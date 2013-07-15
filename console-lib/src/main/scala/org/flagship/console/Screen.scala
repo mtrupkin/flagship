@@ -1,10 +1,15 @@
 package org.flagship.console
 
+
+
 /**
  * User: mtrupkin
  * Date: 7/5/13
  */
-class Screen(val size: Size){
+class Screen(size: Size) extends Dimension {
+  def width: Int = size.width
+  def height: Int = size.height
+
   val blank = ScreenCharacter(' ')
   var fg = Color.White
   var bg = Color.Black
@@ -79,3 +84,4 @@ case class ScreenCharacter(val c: Char, val fg: Color, val bg: Color)
 object ScreenCharacter {
   def apply(c: Char) = new ScreenCharacter(c, Color.White, Color.Black)
 }
+

@@ -4,12 +4,10 @@ package org.flagship.console
  * User: mtrupkin
  * Date: 7/9/13
  */
-class Border(val child: Control, val title: Option[String] = None) extends Control {
-  def size: Size = new Size(child.size.width + 2, child.size.height + 2)
+trait Border extends Control {
 
-
-  def render(screen: Screen) {
-    import screen._
+  abstract override def render(screen: Screen) {
+    import screen.write
 
     // corners
     write(0, 0, ACS.ULCORNER)
@@ -29,11 +27,10 @@ class Border(val child: Control, val title: Option[String] = None) extends Contr
     }
 
     // display title
-    if (title != None) {
-      write(2, 0, title.get)
-    }
+//    if (title != None) {
+//      write(2, 0, title.get)
+//    }
 
-    child.render(screen)
+    super.render(screen)
   }
-
 }

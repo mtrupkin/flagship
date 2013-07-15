@@ -74,9 +74,9 @@ class SwingTerminal(val terminalSize: Size = new Size(50, 20), windowTitle: Stri
       getGraphics2D(buffer.getDrawGraphics)
     }
 
-    override def getPreferredSize(): Dimension = {
+    override def getPreferredSize(): java.awt.Dimension = {
       val screenDim = screenSize(charSize(getGraphics()))
-      new Dimension(screenDim.width, screenDim.height)
+      new java.awt.Dimension(screenDim.width, screenDim.height)
     }
 
     def charSize(g: Graphics): Size = {

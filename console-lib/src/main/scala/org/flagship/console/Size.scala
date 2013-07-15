@@ -5,5 +5,5 @@ package org.flagship.console
  * Date: 7/5/13
  */
 
-case class Size(val width: Int, val height: Int)
+case class Size(width: Int, height: Int) extends Dimension
 
