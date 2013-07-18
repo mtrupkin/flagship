@@ -6,7 +6,7 @@ package org.flagship.console
  * User: mtrupkin
  * Date: 7/5/13
  */
-class Screen(size: Size) extends Dimension {
+class Screen(size: Dimension) extends Dimension {
   def width: Int = size.width
   def height: Int = size.height
 
@@ -14,7 +14,6 @@ class Screen(size: Size) extends Dimension {
   var fg = Color.White
   var bg = Color.Black
   var cursor = Point(0, 0)
-  var offset = Point(0, 0)
   val buffer = Array.ofDim[ScreenCharacter](size.width, size.height)
 
   clear()
@@ -27,7 +26,7 @@ class Screen(size: Size) extends Dimension {
   }
 
   def apply(x: Int, y: Int): ScreenCharacter = {
-    buffer(x+offset.x)(y+offset.y)
+    buffer(x)(y)
   }
 
   def apply(point: Point): ScreenCharacter = {
@@ -35,7 +34,7 @@ class Screen(size: Size) extends Dimension {
   }
 
   def update(x: Int, y: Int, sc: ScreenCharacter ) {
-    buffer(x+offset.x)(y+offset.y) = sc
+    buffer(x)(y) = sc
   }
 
   def update(point: Point, sc: ScreenCharacter) {
@@ -72,11 +71,16 @@ class Screen(size: Size) extends Dimension {
   }
 
   def display(x: Int, y: Int, screen: Screen) {
+    screen.foreach(drawScreenCharacter)
+
+    def drawScreenCharacter(p: Point, s: ScreenCharacter) {
+      update(p.x + x, p.y + y, s)
+    }
   }
 }
 
 object Screen {
-  def apply(size: Size) = new Screen(size)
+  def apply(size: Dimension) = new Screen(size)
 }
 
 case class ScreenCharacter(val c: Char, val fg: Color, val bg: Color)
