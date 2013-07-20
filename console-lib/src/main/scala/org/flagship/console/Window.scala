@@ -6,7 +6,7 @@ package org.flagship.console
  */
 class Window(val size: Size, val title: Option[String] = None) extends Composite {
   private val panel = new Panel()
-  def minSize: Size = size
+  def minSize: Dimension = size
 
   override def addControl(control: Control) {
     panel.addControl(control)

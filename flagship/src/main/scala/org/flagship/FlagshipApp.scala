@@ -38,8 +38,8 @@ class FlagshipWindow(size: Size) extends Window(size, Some("Flagship Window")) {
 
 object FlagshipApp extends App {
   val size = Size(100, 40)
-  val term = new SwingTerminal(size, "Flagship Terminal")
-  val window = new FlagshipWindow(size)
+  val term = new SwingTerminal(Size(102, 42), "Flagship Terminal")
+  val window = new FlagshipWindow(Size(100, 40)) with Border
   val gui = new GUIConsole(term, window)
 
   gui.doEventLoop()

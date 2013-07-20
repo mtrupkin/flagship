@@ -8,7 +8,7 @@ package org.flagship.console
 class GUIConsole(val terminal: Terminal, val window: Window) {
   val framesPerSecond = 23
   val refreshRate = (1f / framesPerSecond) * 1000
-  val screen = Screen(window.size)
+  val screen = Screen(terminal.terminalSize)
 
   def completed(): Boolean = terminal.closed
 
