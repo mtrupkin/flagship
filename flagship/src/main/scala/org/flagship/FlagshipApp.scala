@@ -21,17 +21,19 @@ class FlagshipWindowOld extends com.googlecode.lanterna.gui.Window("Flagship") {
 }
 
 class FlagshipWindow(size: Size) extends Window(size, Some("Flagship Window")) {
-  val horizontalPanel = new Panel()
-  val leftPanel = new Panel()
-  val middlePanel = new Panel()
-  val rightPanel = new Panel()
+  val horizontalPanel = new Panel() with Border
+  val leftPanel = new Panel() with Border
+  val rightPanel = new Panel() with Border
+  val topRightPanel = new Panel() with Border
+  val bottomRightPanel = new Panel() with Border
 
   val label = new Label("Test Label") with Border
-  middlePanel.addControl(label)
+  topRightPanel.addControl(label)
 
   horizontalPanel.addControl(leftPanel);
-  horizontalPanel.addControl(middlePanel);
   horizontalPanel.addControl(rightPanel);
+  //rightPanel.addControl(topRightPanel);
+  //rightPanel.addControl(bottomRightPanel);
 
   addControl(horizontalPanel);
 }

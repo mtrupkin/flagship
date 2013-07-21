@@ -13,6 +13,11 @@ trait Composite extends Control {
   }
 
   def render(screen: Screen) = {
-    controls.foreach(c => c.render(screen))
+
+    controls.foreach(c => {
+      val controlScreen = Screen(c)
+      c.render(controlScreen)
+      screen.display(c.x, c.y, controlScreen)
+    })
   }
 }
