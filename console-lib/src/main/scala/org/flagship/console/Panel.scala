@@ -5,17 +5,17 @@ package org.flagship.console
  * Date: 7/8/13
  */
 class Panel extends Composite {
-  def minSize: Dimension = {
-    var width = 1
-    var height = 1
+  override def addControl(control: Control) {
+    super.addControl(control)
+    layout()
+  }
 
-    controls.foreach(c => {
-      if (c.width > width)
-        width = c.width
-      if (c.height > height)
-        height = c.height } )
-
-
-    new Size(width, height)
+  def layout() = {
+    var lastPos = Point.ZERO
+    for (c <- controls) {
+      c.x = lastPos.x
+      c.y = lastPos.y
+      lastPos = Point(c.right, 0)
+    }
   }
 }

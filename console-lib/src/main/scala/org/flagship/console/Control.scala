@@ -4,11 +4,14 @@ package org.flagship.console
  * User: mtrupkin
  * Date: 7/6/13
  */
-trait Control extends Dimension with Position {
+abstract class Control extends Dimension with Position {
   def minSize: Dimension
-  def width = minSize.width
-  def height = minSize.height
+  def width: Int = minSize.width
+  def height: Int = minSize.height
   def render(screen: Screen)
-  def x = 0
-  def y = 0
+  var x:Int = 0
+  var y:Int = 0
+  def right:Int = x + width
+  def bottom:Int = y + height
 }
+

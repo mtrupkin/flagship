@@ -27,8 +27,11 @@ class FlagshipWindow(size: Size) extends Window(size, Some("Flagship Window")) {
   val topRightPanel = new Panel() with Border
   val bottomRightPanel = new Panel() with Border
 
-  val label = new Label("Test Label") with Border
-  topRightPanel.addControl(label)
+  val leftLabel = new Label("Left")
+  leftPanel.addControl(leftLabel)
+
+  val rightLabel = new Label("Right")
+  rightPanel.addControl(rightLabel)
 
   horizontalPanel.addControl(leftPanel);
   horizontalPanel.addControl(rightPanel);
