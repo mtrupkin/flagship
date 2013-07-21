@@ -13,5 +13,6 @@ abstract class Control extends Dimension with Position {
   var y:Int = 0
   def right:Int = x + width
   def bottom:Int = y + height
+  def layoutData: LayoutData = LayoutData.NONE
 }
 

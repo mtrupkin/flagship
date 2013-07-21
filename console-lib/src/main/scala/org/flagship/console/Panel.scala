@@ -4,18 +4,20 @@ package org.flagship.console
  * User: mtrupkin
  * Date: 7/8/13
  */
-class Panel extends Composite {
+class Panel(val layoutManager: LayoutManager) extends Composite {
+  def this() { this(LayoutManager.HORIZONTAL) }
+
   override def addControl(control: Control) {
     super.addControl(control)
-    layout()
+    layoutManager.layout(controls)
   }
 
-  def layout() = {
-    var lastPos = Point.ZERO
-    for (c <- controls) {
-      c.x = lastPos.x
-      c.y = lastPos.y
-      lastPos = Point(c.right, 0)
-    }
+  def addControl(control: Control, layout: Layout) {
+    addControl(control)
   }
+}
+
+object Panel {
+  def apply(): Panel = Panel(LayoutManager.HORIZONTAL)
+  def apply(layout: LayoutManager): Panel = new Panel(layout)
 }
