@@ -12,6 +12,10 @@ case class Layout(
   top: LayoutData = LayoutData.NONE,
   bottom: LayoutData = LayoutData.NONE)
 
+object Layout {
+  val NONE: Layout = new Layout()
+}
+
 object LayoutData {
   val NONE: LayoutData = new LayoutData(false, false)
 }

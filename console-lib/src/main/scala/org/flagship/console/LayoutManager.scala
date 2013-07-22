@@ -10,14 +10,26 @@ trait LayoutManager {
 
     flow(controls)
 
-    controls.foreach( c => c.grab() )
     controls.foreach( c => c.snap() )
+    controls.reverse.foreach( c => c.snap() )
+
+    controls.foreach( c => c.grab() )
+    controls.reverse.foreach( c => c.grab() )
   }
 
   def flow(controls: List[Control])
 }
 
 class HLayout extends LayoutManager {
+  def snap(controls: List[Control]) {
+    var lastPos = Point.ZERO
+    for (c <- controls) {
+      c.x = lastPos.x
+      c.y = lastPos.y
+      lastPos = Point(c.right, 0)
+    }
+  }
+
   def flow(controls: List[Control]) {
     var lastPos = Point.ZERO
     for (c <- controls) {

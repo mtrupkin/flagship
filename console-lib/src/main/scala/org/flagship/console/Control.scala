@@ -18,7 +18,7 @@ abstract class Control extends Dimension with Position {
 
   def render(screen: Screen)
 
-  def layoutData: LayoutData = LayoutData.NONE
+  def layout: Layout = Layout.NONE
 
   def compact() {
     width = minSize.width
