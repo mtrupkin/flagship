@@ -5,11 +5,20 @@ package org.flagship.console
  * Date: 7/21/13
  */
 trait LayoutManager {
-  def layout(controls: List[Control])
+  def layout(controls: List[Control]) {
+    controls.foreach( c => c.compact() )
+
+    flow(controls)
+
+    controls.foreach( c => c.grab() )
+    controls.foreach( c => c.snap() )
+  }
+
+  def flow(controls: List[Control])
 }
 
 class HLayout extends LayoutManager {
-  def layout(controls: List[Control]) {
+  def flow(controls: List[Control]) {
     var lastPos = Point.ZERO
     for (c <- controls) {
       c.x = lastPos.x
@@ -20,7 +29,7 @@ class HLayout extends LayoutManager {
 }
 
 class VLayout extends LayoutManager {
-  def layout(controls: List[Control]) {
+  def flow(controls: List[Control]) {
     var lastPos = Point.ZERO
     for (c <- controls) {
       c.x = lastPos.x

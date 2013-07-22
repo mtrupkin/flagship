@@ -6,13 +6,26 @@ package org.flagship.console
  */
 abstract class Control extends Dimension with Position {
   def minSize: Dimension
-  def width: Int = minSize.width
-  def height: Int = minSize.height
+
+  var width: Int = minSize.width
+  var height: Int = minSize.height
+
+  var x: Int = 0
+  var y: Int = 0
+
+  var right: Int = x + width
+  var bottom: Int = y + height
+
   def render(screen: Screen)
-  var x:Int = 0
-  var y:Int = 0
-  def right:Int = x + width
-  def bottom:Int = y + height
+
   def layoutData: LayoutData = LayoutData.NONE
+
+  def compact() {
+    width = minSize.width
+    height = minSize.height
+  }
+
+  def grab() {}
+  def snap() {}
 }
 

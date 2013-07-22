@@ -32,7 +32,7 @@ trait Border extends Control {
 //    if (title != None) {
 //      write(2, 0, title.get)
 //    }
-    val controlScreen = Screen(Size(super.width, super.height))
+    val controlScreen = Screen(Size(width, height))
     super.render(controlScreen)
     screen.display(1, 1, controlScreen)
 
