@@ -26,27 +26,33 @@ class FlagshipWindow(size: Size) extends Window(size, Some("Flagship Window")) {
   val rightPanel = new Composite() with Border
   val topRightPanel = new Composite() with Border
   val bottomRightPanel = new Composite() with Border
+  import LayoutData._
 
   val leftLabel = new Label("Left")
+  leftPanel.controlLayout = Layout(right = NONE, bottom = GRAB)
   leftPanel.addControl(leftLabel)
 
   val rightLabel = new Label("Right")
   rightPanel.addControl(rightLabel)
+  rightPanel.controlLayout = Layout(right = GRAB, bottom = GRAB)
 
   horizontalPanel.addControl(leftPanel)
   horizontalPanel.addControl(rightPanel)
   //rightPanel.addControl(topRightPanel)
   //rightPanel.addControl(bottomRightPanel)
-  //Layout().copy(right = LayoutData(false, true))
-  horizontalPanel.layout = horizontalPanel.layout.copy(right = LayoutData(false, true))
+
+  horizontalPanel.controlLayout = Layout(right = GRAB, bottom = GRAB)
 
   addControl(horizontalPanel)
+
+  layout()
 }
 
 object FlagshipApp extends App {
   val size = Size(100, 40)
   val term = new SwingTerminal(Size(102, 42), "Flagship Terminal")
   val window = new FlagshipWindow(Size(100, 40)) with Border
+
   val gui = new GUIConsole(term, window)
 
   gui.doEventLoop()

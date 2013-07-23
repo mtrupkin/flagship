@@ -26,7 +26,7 @@ class HLayout extends LayoutManager() {
     var lastPos = Point(size.width, 0)
 
     for (c <- controls.reverse) {
-      if (c.layout.right.snap) {
+      if (c.controlLayout.right.snap) {
         c.x = lastPos.x - c.width
         c.y = lastPos.y
       }

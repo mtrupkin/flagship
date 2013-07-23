@@ -6,4 +6,7 @@ package org.flagship.console
  */
 class Window(val size: Size, val title: Option[String] = None) extends Composite {
   override def minSize: Dimension = size
+  def layout() {
+    layout(size)
+  }
 }

@@ -18,4 +18,7 @@ object Layout {
 
 object LayoutData {
   val NONE: LayoutData = new LayoutData(false, false)
+  val GRAB: LayoutData = new LayoutData(false, true)
+  val SNAP: LayoutData = new LayoutData(true, false)
+
 }

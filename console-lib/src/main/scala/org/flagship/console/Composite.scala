@@ -10,9 +10,6 @@ abstract class Composite(val layoutManager: LayoutManager = LayoutManager.HORIZO
 
   def addControl(control: Control) {
     controls = controls :+ control
-
-    layoutManager.layout(this, controls)
-    compact()
   }
 
 
@@ -22,6 +19,23 @@ abstract class Composite(val layoutManager: LayoutManager = LayoutManager.HORIZO
       c.render(controlScreen)
       screen.display(c.x, c.y, controlScreen)
     })
+  }
+
+  def layout(size: Dimension) {
+    compact()
+
+    grab(size)
+  }
+
+  override def grab(size: Dimension) {
+    super.grab(size)
+    controls.foreach(c=>c.grab(this))
+  }
+
+  override def compact() {
+    controls.foreach( c => c.compact() )
+    layoutManager.flow(controls)
+    super.compact()
   }
 
   override def minSize: Dimension = {

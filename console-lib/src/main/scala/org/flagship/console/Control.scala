@@ -13,7 +13,7 @@ trait Control extends Dimension with Position {
   var x: Int = 0
   var y: Int = 0
 
-  var layout: Layout = Layout.NONE
+  var controlLayout: Layout = Layout.NONE
 
   def right: Int = x + width
   def bottom: Int = y + height
@@ -24,6 +24,15 @@ trait Control extends Dimension with Position {
   def compact() {
     width = minSize.width
     height = minSize.height
+  }
+
+  def grab(size: Dimension) {
+    if (controlLayout.right.grab) {
+      width = size.width - x
+    }
+    if (controlLayout.bottom.grab) {
+      height = size.height - y
+    }
   }
 }
 
