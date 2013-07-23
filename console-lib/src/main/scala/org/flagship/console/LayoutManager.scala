@@ -19,6 +19,9 @@ abstract class LayoutManager {
   }
 
   def flow(controls: List[Control])
+
+  def grab(size: Dimension, controls: List[Control]): Unit
+  def snap(size: Dimension, controls: List[Control]): Unit
 }
 
 class HLayout extends LayoutManager() {
@@ -34,6 +37,15 @@ class HLayout extends LayoutManager() {
     }
   }
 
+  def grab(size: Dimension, controls: List[Control]): Unit = {
+    var remaining: Dimension = Size(size.width, size.height)
+
+    for(c <- controls.reverse) {
+      c.grab(remaining)
+      remaining = Size(remaining.width - c.width, remaining.height)
+    }
+  }
+
   def flow(controls: List[Control]) {
     var lastPos = Point.ZERO
     for (c <- controls) {
@@ -45,6 +57,28 @@ class HLayout extends LayoutManager() {
 }
 
 class VLayout extends LayoutManager {
+  def grab(size: Dimension, controls: List[Control]): Unit = {
+    var remaining: Dimension = Size(size.width, size.height)
+
+    for(c <- controls.reverse) {
+      c.grab(remaining)
+      remaining = Size(remaining.width, remaining.height - c.height)
+    }
+  }
+
+  def snap(size: Dimension, controls: List[Control]) {
+    var lastPos = Point(0, size.height)
+
+    for (c <- controls.reverse) {
+      if (c.controlLayout.bottom.snap) {
+        c.x = lastPos.x - c.width
+        c.y = lastPos.y - c.height
+      }
+      lastPos = Point(0, c.y)
+    }
+  }
+
+
   def flow(controls: List[Control]) {
     var lastPos = Point.ZERO
     for (c <- controls) {

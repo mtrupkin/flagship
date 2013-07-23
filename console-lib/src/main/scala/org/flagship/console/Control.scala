@@ -26,13 +26,15 @@ trait Control extends Dimension with Position {
     height = minSize.height
   }
 
-  def grab(size: Dimension) {
+  def grab(size: Dimension): Unit = {
     if (controlLayout.right.grab) {
       width = size.width - x
     }
     if (controlLayout.bottom.grab) {
       height = size.height - y
     }
+
+
 //    if (controlLayout.left.grab) {
 //      x = position.x
 //    }

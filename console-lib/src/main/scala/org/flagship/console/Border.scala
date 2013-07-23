@@ -38,9 +38,10 @@ trait Border extends Control {
     screen.display(1, 1, controlScreen)
   }
 
-  abstract override def grab(size: Dimension) {
+  abstract override def grab(size: Dimension): Unit = {
     val controlSize = Size(size.width - 2, size.height - 2)
     super.grab(controlSize)
+
   }
 
   abstract override def snap(size: Dimension) {

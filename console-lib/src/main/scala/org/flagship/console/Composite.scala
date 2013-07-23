@@ -12,7 +12,6 @@ abstract class Composite(val layoutManager: LayoutManager = LayoutManager.HORIZO
     controls = controls :+ control
   }
 
-
   def render(screen: Screen) {
     controls.foreach(c => {
       val controlScreen = Screen(c)
@@ -37,16 +36,21 @@ abstract class Composite(val layoutManager: LayoutManager = LayoutManager.HORIZO
   override def snap(size: Dimension) {
     super.snap(size)
     controls.foreach(c=>c.snap(this))
+    //layoutManager.snap(this, controls)
   }
 
-  override def grab(size: Dimension) {
+  override def grab(size: Dimension): Unit = {
     super.grab(size)
-    controls.foreach(c=>c.grab(this))
-//    var sizeRemaining = Size(this.width, this.height)
+    //controls.foreach(c=>c.grab(this))
+    layoutManager.grab(this, controls)
+
+
+//    var sizeRemaining: Dimension = Size(this.width, this.height)
 //    for( c <- controls.reverse ) {
-//      c.grab(sizeRemaining)
-//      sizeRemaining = Size(sizeRemaining.width-c.width, sizeRemaining.height-c.height)
+//      sizeRemaining = c.grab(sizeRemaining)
 //    }
+//
+//    sizeRemaining
   }
 
   override def minSize: Dimension = {

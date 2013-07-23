@@ -158,9 +158,9 @@ class SwingTerminal(val terminalSize: Size = new Size(50, 20), windowTitle: Stri
 
         g2.setFont(systemFont)
         val p1 = toPixel(Point(90, 35))
-        g2.drawString(frameRate.toString, p1.x, p1.y)
+        //g2.drawString(frameRate.toString, p1.x, p1.y)
         val p2 = toPixel(Point(90, 36))
-        g2.drawString(frameCount.toString, p2.x, p2.y)
+        //g2.drawString(frameCount.toString, p2.x, p2.y)
 
       }
     }

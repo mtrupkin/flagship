@@ -23,26 +23,43 @@ class FlagshipWindowOld extends com.googlecode.lanterna.gui.Window("Flagship") {
 class FlagshipWindow(size: Size) extends Window(size, Some("Flagship Window")) {
   val horizontalPanel = new Composite(LayoutManager.HORIZONTAL) with Border
   val leftPanel = new Composite() with Border
-  val rightPanel = new Composite() with Border
+  val rightPanel = new Composite(LayoutManager.VERTICAL) with Border
   val topRightPanel = new Composite() with Border
   val bottomRightPanel = new Composite() with Border
   import LayoutData._
 
-  val leftLabel = new Label("Left")
-  leftPanel.controlLayout = Layout(right = GRAB, bottom = NONE)
-  leftPanel.addControl(leftLabel)
+  val leftLabel = new Label("Left") with Border
+  val leftLabel2 = new Label("Left2") with Border
+  val leftInnerPanel = new Composite() with Border
+  val rightLabel = new Label("Right") with Border
 
-  val rightLabel = new Label("Right")
-  rightPanel.addControl(rightLabel)
+  topRightPanel.controlLayout = Layout(bottom = GRAB)
+  bottomRightPanel.controlLayout = Layout(bottom = SNAP, right = GRAB)
+  leftLabel.controlLayout = Layout(bottom = GRAB)
+  leftLabel2.controlLayout = Layout(right = SNAP, bottom = SNAP)
+  leftInnerPanel.controlLayout = Layout(right = SNAP, bottom = SNAP)
+  leftPanel.controlLayout = Layout(right = GRAB, bottom = GRAB)
   rightPanel.controlLayout = Layout(right = SNAP, bottom = GRAB)
+  //rightLabel.controlLayout = Layout(right = SNAP, bottom = GRAB)
+
+  leftPanel.addControl(leftLabel)
+  leftPanel.addControl(leftLabel2)
+  leftPanel.addControl(leftInnerPanel)
+
+  rightPanel.addControl(rightLabel)
+  rightPanel.addControl(topRightPanel)
+  rightPanel.addControl(bottomRightPanel)
+
+
 
   horizontalPanel.addControl(leftPanel)
   horizontalPanel.addControl(rightPanel)
-  //rightPanel.addControl(topRightPanel)
-  //rightPanel.addControl(bottomRightPanel)
+
 
   horizontalPanel.controlLayout = Layout(right = GRAB, bottom = GRAB)
 
+  //addControl(leftLabel)
+  //addControl(rightLabel)
   addControl(horizontalPanel)
 
   layout()
