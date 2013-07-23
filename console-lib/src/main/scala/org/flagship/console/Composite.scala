@@ -5,12 +5,16 @@ package org.flagship.console
  * User: mtrupkin
  * Date: 7/8/13
  */
-trait Composite extends Control {
+abstract class Composite(val layoutManager: LayoutManager = LayoutManager.HORIZONTAL) extends Control {
   var controls = List[Control]()
 
   def addControl(control: Control) {
     controls = controls :+ control
+
+    layoutManager.layout(this, controls)
+    compact()
   }
+
 
   def render(screen: Screen) {
     controls.foreach(c => {
@@ -20,16 +24,17 @@ trait Composite extends Control {
     })
   }
 
-  def minSize: Dimension = {
+  override def minSize: Dimension = {
     var width = 1
     var height = 1
 
-    controls.foreach(c => {
+    if (controls != null) {
+      controls.foreach(c => {
       if (c.right > width)
         width = c.right
       if (c.bottom > height)
         height = c.bottom} )
-
+    }
 
     new Size(width, height)
   }

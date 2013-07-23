@@ -8,6 +8,7 @@ package org.flagship.console
 trait Border extends Control {
 
   abstract override def minSize: Dimension = { Size(super.minSize.width +2, super.minSize.height +2)}
+
   abstract override def render(screen: Screen) {
     import screen.write
 

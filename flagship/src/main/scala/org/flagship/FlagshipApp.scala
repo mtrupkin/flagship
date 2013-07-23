@@ -21,11 +21,11 @@ class FlagshipWindowOld extends com.googlecode.lanterna.gui.Window("Flagship") {
 }
 
 class FlagshipWindow(size: Size) extends Window(size, Some("Flagship Window")) {
-  val horizontalPanel = new Panel(LayoutManager.HORIZONTAL) with Border
-  val leftPanel = new Panel() with Border
-  val rightPanel = new Panel() with Border
-  val topRightPanel = new Panel() with Border
-  val bottomRightPanel = new Panel() with Border
+  val horizontalPanel = new Composite(LayoutManager.HORIZONTAL) with Border
+  val leftPanel = new Composite() with Border
+  val rightPanel = new Composite() with Border
+  val topRightPanel = new Composite() with Border
+  val bottomRightPanel = new Composite() with Border
 
   val leftLabel = new Label("Left")
   leftPanel.addControl(leftLabel)
@@ -37,8 +37,10 @@ class FlagshipWindow(size: Size) extends Window(size, Some("Flagship Window")) {
   horizontalPanel.addControl(rightPanel)
   //rightPanel.addControl(topRightPanel)
   //rightPanel.addControl(bottomRightPanel)
-  Layout().copy(right = LayoutData(false, true))
-  addControl(horizontalPanel, Layout().copy(right = LayoutData(false, true)))
+  //Layout().copy(right = LayoutData(false, true))
+  horizontalPanel.layout = horizontalPanel.layout.copy(right = LayoutData(false, true))
+
+  addControl(horizontalPanel)
 }
 
 object FlagshipApp extends App {
