@@ -42,4 +42,9 @@ trait Border extends Control {
     val controlSize = Size(size.width - 2, size.height - 2)
     super.grab(controlSize)
   }
+
+  abstract override def snap(size: Dimension) {
+    val controlSize = Size(size.width - 2, size.height - 2)
+    super.snap(controlSize)
+  }
 }

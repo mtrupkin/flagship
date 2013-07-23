@@ -33,6 +33,21 @@ trait Control extends Dimension with Position {
     if (controlLayout.bottom.grab) {
       height = size.height - y
     }
+//    if (controlLayout.left.grab) {
+//      x = position.x
+//    }
+//    if (controlLayout.top.grab) {
+//      y = position.y
+//    }
+  }
+
+  def snap(size: Dimension) {
+    if (controlLayout.right.snap) {
+      x = size.width - width
+    }
+    if (controlLayout.bottom.snap) {
+      y = size.height - height
+    }
   }
 }
 

@@ -29,12 +29,12 @@ class FlagshipWindow(size: Size) extends Window(size, Some("Flagship Window")) {
   import LayoutData._
 
   val leftLabel = new Label("Left")
-  leftPanel.controlLayout = Layout(right = NONE, bottom = GRAB)
+  leftPanel.controlLayout = Layout(right = GRAB, bottom = NONE)
   leftPanel.addControl(leftLabel)
 
   val rightLabel = new Label("Right")
   rightPanel.addControl(rightLabel)
-  rightPanel.controlLayout = Layout(right = GRAB, bottom = GRAB)
+  rightPanel.controlLayout = Layout(right = SNAP, bottom = GRAB)
 
   horizontalPanel.addControl(leftPanel)
   horizontalPanel.addControl(rightPanel)

@@ -25,17 +25,28 @@ abstract class Composite(val layoutManager: LayoutManager = LayoutManager.HORIZO
     compact()
 
     grab(size)
-  }
-
-  override def grab(size: Dimension) {
-    super.grab(size)
-    controls.foreach(c=>c.grab(this))
+    snap(size)
   }
 
   override def compact() {
     controls.foreach( c => c.compact() )
     layoutManager.flow(controls)
     super.compact()
+  }
+
+  override def snap(size: Dimension) {
+    super.snap(size)
+    controls.foreach(c=>c.snap(this))
+  }
+
+  override def grab(size: Dimension) {
+    super.grab(size)
+    controls.foreach(c=>c.grab(this))
+//    var sizeRemaining = Size(this.width, this.height)
+//    for( c <- controls.reverse ) {
+//      c.grab(sizeRemaining)
+//      sizeRemaining = Size(sizeRemaining.width-c.width, sizeRemaining.height-c.height)
+//    }
   }
 
   override def minSize: Dimension = {
