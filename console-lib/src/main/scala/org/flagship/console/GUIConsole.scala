@@ -1,5 +1,7 @@
 package org.flagship.console
 
+import flagship.console.input.ConsoleKey
+
 
 /**
  * User: mtrupkin

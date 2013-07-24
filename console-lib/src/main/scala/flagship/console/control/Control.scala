@@ -1,11 +1,14 @@
-package org.flagship.console
+package flagship.console.control
+
+import org.flagship.console._
+import org.flagship.console.Size
 
 /**
  * User: mtrupkin
  * Date: 7/6/13
  */
 trait Control extends Dimension with Position {
-  def minSize: Dimension = Size(1, 1)
+  def minSize: Dimension = Size(0, 0)
 
   var width: Int = minSize.width
   var height: Int = minSize.height

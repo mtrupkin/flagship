@@ -1,5 +1,7 @@
 package org.flagship.console
 
+import flagship.console.control.Control
+
 /**
  * User: mtrupkin
  * Date: 7/21/13
@@ -26,14 +28,10 @@ abstract class LayoutManager {
 
 class HLayout extends LayoutManager() {
   def snap(size: Dimension, controls: List[Control]) {
-    var lastPos = Point(size.width, 0)
-
+    var remaining: Dimension = Size(size.width, size.height)
     for (c <- controls.reverse) {
-      if (c.controlLayout.right.snap) {
-        c.x = lastPos.x - c.width
-        c.y = lastPos.y
-      }
-      lastPos = Point(c.x, 0)
+      c.snap(remaining)
+      remaining = Size(remaining.width - c.width, remaining.height)
     }
   }
 
@@ -67,14 +65,10 @@ class VLayout extends LayoutManager {
   }
 
   def snap(size: Dimension, controls: List[Control]) {
-    var lastPos = Point(0, size.height)
-
+    var remaining: Dimension = Size(size.width, size.height)
     for (c <- controls.reverse) {
-      if (c.controlLayout.bottom.snap) {
-        c.x = lastPos.x - c.width
-        c.y = lastPos.y - c.height
-      }
-      lastPos = Point(0, c.y)
+      c.snap(remaining)
+      remaining = Size(remaining.width, remaining.height - c.height)
     }
   }
 

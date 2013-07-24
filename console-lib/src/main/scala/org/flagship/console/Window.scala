@@ -1,5 +1,7 @@
 package org.flagship.console
 
+import flagship.console.control.Composite
+
 /**
  * User: mtrupkin
  * Date: 7/6/13

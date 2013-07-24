@@ -1,4 +1,7 @@
-package org.flagship.console
+package flagship.console.widget
+
+import flagship.console.control.Control
+import org.flagship.console.{ACS, Screen, Size, Dimension}
 
 
 /**

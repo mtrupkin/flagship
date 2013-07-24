@@ -7,12 +7,21 @@ import java.awt._
 import scala.swing.{BorderPanel, Frame}
 import scala.swing.event.{KeyReleased, Key, KeyPressed}
 import java.awt.event.{MouseEvent, MouseAdapter, KeyEvent, KeyAdapter}
+import flagship.console.input.{ConsoleKey, ConsoleKeyModifier}
 
 
 /**
  * User: mtrupkin
  * Date: 7/5/13
  */
+trait Terminal {
+  val terminalSize: Size
+  var closed = false
+  var key: Option[ConsoleKey] = None
+
+  def flush(screen: Screen)
+}
+
 class SwingTerminal(val terminalSize: Size = new Size(50, 20), windowTitle: String = "Swing Terminal") extends Frame with Terminal {
   val terminalCanvas = new TerminalCanvas(terminalSize)
   val normalTextFont = new Font("Courier New", Font.PLAIN, 14)
