@@ -1,6 +1,6 @@
-package org.flagship.console
+package flagship.console.terminal
 
-
+import org.flagship.console.{Point, Dimension}
 
 /**
  * User: mtrupkin

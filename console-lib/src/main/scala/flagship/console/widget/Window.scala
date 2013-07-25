@@ -1,6 +1,7 @@
-package org.flagship.console
+package flagship.console.widget
 
 import flagship.console.control.Composite
+import org.flagship.console.{Dimension, Size}
 
 /**
  * User: mtrupkin

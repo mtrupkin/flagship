@@ -1,6 +1,8 @@
 package flagship.console.control
 
 import org.flagship.console._
+import flagship.console.terminal.Screen
+import flagship.console.layout.LayoutManager
 
 /**
  * S4i Systems Inc.

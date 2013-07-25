@@ -2,6 +2,8 @@ package flagship.console.control
 
 import org.flagship.console._
 import org.flagship.console.Size
+import flagship.console.terminal.Screen
+import flagship.console.layout.Layout
 
 /**
  * User: mtrupkin

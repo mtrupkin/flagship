@@ -1,7 +1,8 @@
 package flagship.console.widget
 
-import org.flagship.console.{Screen, Size, Dimension}
-import flagship.console.control.Control
+import org.flagship.console.{Size, Dimension}
+import flagship.console.control.{Control}
+import flagship.console.terminal.Screen
 
 /**
  * User: mtrupkin

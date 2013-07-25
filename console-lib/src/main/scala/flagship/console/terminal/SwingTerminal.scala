@@ -1,6 +1,6 @@
-package org.flagship.console
+package flagship.console.terminal
 
-import javax.swing.{WindowConstants}
+import javax.swing.WindowConstants
 
 import java.awt.image.BufferStrategy
 import java.awt._
@@ -8,6 +8,11 @@ import scala.swing.{BorderPanel, Frame}
 import scala.swing.event.{KeyReleased, Key, KeyPressed}
 import java.awt.event.{MouseEvent, MouseAdapter, KeyEvent, KeyAdapter}
 import flagship.console.input.{ConsoleKey, ConsoleKeyModifier}
+import org.flagship.console._
+import java.awt.Point
+import scala.Some
+import flagship.console.input.ConsoleKeyModifier
+import org.flagship.console.Size
 
 
 /**

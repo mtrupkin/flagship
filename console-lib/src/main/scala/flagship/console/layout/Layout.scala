@@ -1,4 +1,4 @@
-package org.flagship.console
+package flagship.console.layout
 
 /**
  * User: mtrupkin

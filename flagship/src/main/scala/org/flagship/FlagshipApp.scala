@@ -3,8 +3,10 @@ package org.flagship
 import org.flagship.console._
 import org.flagship.console.Size
 import scala.Some
-import flagship.console.widget.{Border, Label}
+import flagship.console.widget.{Window, Border, Label}
 import flagship.console.control.Composite
+import flagship.console.terminal.{GUIConsole, SwingTerminal}
+import flagship.console.layout.{LayoutManager, LayoutData, Layout}
 
 
 class FlagshipWindowOld extends com.googlecode.lanterna.gui.Window("Flagship") {
