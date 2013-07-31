@@ -45,13 +45,26 @@ trait Border extends Control {
   }
 
   abstract override def grab(size: Size): Unit = {
-    val controlSize = Size(size.width - 2, size.height - 2)
-    super.grab(controlSize)
+//    val controlSize = Size(size.width - 2, size.height - 2)
+//    super.grab(controlSize)
+    if (controlLayout.right.grab) {
+      dimension = dimension.copy(width = size.width - position.x)
+    }
+    if (controlLayout.bottom.grab) {
+      dimension = dimension.copy(height = size.height - position.y)
+    }
 
   }
 
-  abstract override def snap(size: Size) {
-    val controlSize = Size(size.width - 2, size.height - 2)
-    super.snap(controlSize)
-  }
+//  abstract override def snap(size: Size) {
+////    val controlSize = Size(size.width - 2, size.height - 2)
+////    super.snap(controlSize)
+//
+//    if (controlLayout.right.snap) {
+//      position = position.copy(x = size.width - dimension.width)
+//    }
+//    if (controlLayout.bottom.snap) {
+//      position = position.copy(y = size.height - dimension.height)
+//    }
+//  }
 }

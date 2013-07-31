@@ -9,7 +9,7 @@ import flagship.console.layout.LayoutManager
  * User: mtrupkin
  * Date: 7/8/13
  */
-abstract class Composite(val layoutManager: LayoutManager = LayoutManager.HORIZONTAL) extends Control {
+class Composite(val layoutManager: LayoutManager = LayoutManager.HORIZONTAL) extends Control {
   var controls = List[Control]()
 
   def addControl(control: Control) {

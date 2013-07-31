@@ -24,7 +24,7 @@ class FlagshipWindowOld extends com.googlecode.lanterna.gui.Window("Flagship") {
   addComponent(horisontalPanel);
 }
 
-class FlagshipWindow(size: Size) extends Window(size, Some("Flagship Window")) {
+class TestWindow(size: Size) extends Window(size, Some("Test Window")) {
   val horizontalPanel = new Composite(LayoutManager.HORIZONTAL) with Border
   val leftPanel = new Composite() with Border
   val rightPanel = new Composite(LayoutManager.VERTICAL) with Border
@@ -69,10 +69,40 @@ class FlagshipWindow(size: Size) extends Window(size, Some("Flagship Window")) {
   layout()
 }
 
+class FlagshipWindow(size: Size) extends Window(size, Some("Flagship Window")) {
+  val windowPanel = new Composite()
+  val mainPanel = new Composite() with Border
+  val detailPanel = new Composite(LayoutManager.VERTICAL) with Border
+  val fleetListPanel = new Composite() with Border
+  val statusPanel = new Composite() with Border
+  val weaponPanel = new Composite() with Border
+  val targetPanel = new Composite() with Border
+
+  import LayoutData._
+
+  windowPanel.controlLayout = Layout(bottom = GRAB, right = GRAB)
+  mainPanel.controlLayout = Layout(bottom = GRAB, right = GRAB)
+  detailPanel.controlLayout = Layout(bottom = GRAB, right = SNAP)
+
+  statusPanel.controlLayout = Layout(right = GRAB)
+  weaponPanel.controlLayout = Layout(right = GRAB)
+  targetPanel.controlLayout = Layout(right = GRAB)
+
+  detailPanel.addControl(statusPanel)
+  detailPanel.addControl(weaponPanel)
+  detailPanel.addControl(targetPanel)
+
+  windowPanel.addControl(mainPanel)
+  windowPanel.addControl(detailPanel)
+
+  addControl(windowPanel)
+  layout()
+}
+
 object FlagshipApp extends App {
   val size = Size(100, 40)
-  val term = new SwingTerminal(Size(102, 42), "Flagship Terminal")
-  val window = new FlagshipWindow(Size(100, 40)) with Border
+  val term = new SwingTerminal(Size(100, 40), "Flagship Terminal")
+  val window = new FlagshipWindow(Size(100, 40))
 
   val gui = new GUIConsole(term, window)
 
