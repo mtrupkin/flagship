@@ -9,51 +9,38 @@ import flagship.console.layout.Layout
  * User: mtrupkin
  * Date: 7/6/13
  */
-trait Control extends Dimension with Position {
-  def minSize: Dimension = Size(0, 0)
+trait Control {
+  def minSize: Size = Size(0, 0)
 
-  var width: Int = minSize.width
-  var height: Int = minSize.height
+  var dimension: Size = minSize
+  var position = Point.ZERO
 
-  var x: Int = 0
-  var y: Int = 0
+  def right: Int = position.x + dimension.width
+  def bottom: Int = position.y + dimension.height
 
   var controlLayout: Layout = Layout.NONE
 
-  def right: Int = x + width
-  def bottom: Int = y + height
-
   def render(screen: Screen)
 
-
   def compact() {
-    width = minSize.width
-    height = minSize.height
+    dimension = minSize
   }
 
-  def grab(size: Dimension): Unit = {
+  def grab(size: Size): Unit = {
     if (controlLayout.right.grab) {
-      width = size.width - x
+      dimension = dimension.copy(width = size.width - position.x)
     }
     if (controlLayout.bottom.grab) {
-      height = size.height - y
+      dimension = dimension.copy(height = size.height - position.y)
     }
-
-
-//    if (controlLayout.left.grab) {
-//      x = position.x
-//    }
-//    if (controlLayout.top.grab) {
-//      y = position.y
-//    }
   }
 
-  def snap(size: Dimension) {
+  def snap(size: Size) {
     if (controlLayout.right.snap) {
-      x = size.width - width
+      position = position.copy(x = size.width - dimension.width)
     }
     if (controlLayout.bottom.snap) {
-      y = size.height - height
+      position = position.copy(y = size.height - dimension.height)
     }
   }
 }

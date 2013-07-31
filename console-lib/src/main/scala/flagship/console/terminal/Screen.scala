@@ -1,12 +1,12 @@
 package flagship.console.terminal
 
-import org.flagship.console.{Point, Dimension}
+import org.flagship.console.{Point, Size}
 
 /**
  * User: mtrupkin
  * Date: 7/5/13
  */
-class Screen(size: Dimension) extends Dimension {
+class Screen(size: Size) {
   def width: Int = size.width
   def height: Int = size.height
 
@@ -77,10 +77,18 @@ class Screen(size: Dimension) extends Dimension {
       update(p.x + x, p.y + y, s)
     }
   }
+
+  def display(p1: Point, screen: Screen) {
+    screen.foreach(drawScreenCharacter)
+
+    def drawScreenCharacter(p2: Point, s: ScreenCharacter) {
+      update(p1.move(p2), s)
+    }
+  }
 }
 
 object Screen {
-  def apply(size: Dimension) = new Screen(size)
+  def apply(size: Size) = new Screen(size)
 }
 
 case class ScreenCharacter(val c: Char, val fg: Color, val bg: Color)

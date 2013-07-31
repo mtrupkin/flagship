@@ -1,7 +1,6 @@
 package flagship.console.terminal
 
 import flagship.console.input.ConsoleKey
-import flagship.console.terminal.{Screen, Terminal}
 import flagship.console.widget.Window
 
 

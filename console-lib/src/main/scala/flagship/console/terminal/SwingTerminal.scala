@@ -9,10 +9,9 @@ import scala.swing.event.{KeyReleased, Key, KeyPressed}
 import java.awt.event.{MouseEvent, MouseAdapter, KeyEvent, KeyAdapter}
 import flagship.console.input.{ConsoleKey, ConsoleKeyModifier}
 import org.flagship.console._
-import java.awt.Point
 import scala.Some
 import flagship.console.input.ConsoleKeyModifier
-import org.flagship.console.Size
+import org.flagship.console.{Size, Point}
 
 
 /**

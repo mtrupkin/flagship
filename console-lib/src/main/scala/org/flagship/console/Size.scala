@@ -5,10 +5,5 @@ package org.flagship.console
  * Date: 7/5/13
  */
 
-trait Dimension {
-  def width: Int
-  def height: Int
-}
-
-case class Size(width: Int, height: Int) extends Dimension
+case class Size(width: Int, height: Int)
 

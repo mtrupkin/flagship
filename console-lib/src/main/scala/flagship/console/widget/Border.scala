@@ -1,7 +1,7 @@
 package flagship.console.widget
 
 import flagship.console.control.{Control}
-import org.flagship.console.{Size, Dimension}
+import org.flagship.console.{Size, Point}
 import flagship.console.terminal.{ACS, Screen}
 
 
@@ -11,10 +11,12 @@ import flagship.console.terminal.{ACS, Screen}
  */
 trait Border extends Control {
 
-  abstract override def minSize: Dimension = { Size(super.minSize.width +2, super.minSize.height +2)}
+  abstract override def minSize: Size = { Size(super.minSize.width +2, super.minSize.height +2)}
 
   abstract override def render(screen: Screen) {
     import screen.write
+    val width =  this.dimension.width
+    val height =  this.dimension.height
 
     // corners
     write(0, 0, ACS.ULCORNER)
@@ -37,18 +39,18 @@ trait Border extends Control {
 //    if (title != None) {
 //      write(2, 0, title.get)
 //    }
-    val controlScreen = Screen(Size(width, height))
+    val controlScreen = Screen(dimension)
     super.render(controlScreen)
     screen.display(1, 1, controlScreen)
   }
 
-  abstract override def grab(size: Dimension): Unit = {
+  abstract override def grab(size: Size): Unit = {
     val controlSize = Size(size.width - 2, size.height - 2)
     super.grab(controlSize)
 
   }
 
-  abstract override def snap(size: Dimension) {
+  abstract override def snap(size: Size) {
     val controlSize = Size(size.width - 2, size.height - 2)
     super.snap(controlSize)
   }
