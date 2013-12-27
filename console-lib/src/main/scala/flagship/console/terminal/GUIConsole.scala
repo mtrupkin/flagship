@@ -23,11 +23,18 @@ class GUIConsole(val terminal: Terminal, val window: Window) {
   }
 
   def processInput() {
-    if (terminal.key != consoleKey) {
+    for(key <- terminal.key) {
+    println("key: " + key)
+      window.keyPressed(key)
+    }
+  if (terminal.key != consoleKey) {
       consoleKey = terminal.key
       for(key <- consoleKey) {
         println("key pressed: " + key.keyValue)
-        window.keyPressed(key)
+      }
+    } else {
+      for(key <- consoleKey) {
+        println("key released: " + key.keyValue)
       }
     }
   }

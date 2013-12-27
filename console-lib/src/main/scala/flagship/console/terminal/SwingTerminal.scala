@@ -29,6 +29,7 @@ trait Terminal {
 class SwingTerminal(val terminalSize: Size = new Size(50, 20), windowTitle: String = "Swing Terminal") extends Frame with Terminal {
   val terminalCanvas = new TerminalCanvas(terminalSize)
   val normalTextFont = new Font("Courier New", Font.PLAIN, 14)
+  //"SansSerif"
   val systemFont = new Font("Arial", Font.PLAIN, 10)
 
   title = windowTitle

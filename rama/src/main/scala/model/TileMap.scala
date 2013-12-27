@@ -12,6 +12,7 @@ trait TileMap {
 
 class TestMap extends TileMap {
   def apply(x: Int, y: Int): Tile = {
+    if (x == 0 && y == 0) new SimpleTile('@') else
     if ((y % 3 == 0) && (x % 3 == 0)) new SimpleTile('X') else new SimpleTile('.')
   }
 }

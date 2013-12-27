@@ -64,6 +64,20 @@ class TestWindow(size: Size) extends Window(size, Some("Test Window")) {
   layout()
 */
 }
+class ShipControlsPanel extends Composite(LayoutManager.VERTICAL) with Border{
+  val cursorTarget = new Label("    target: ", "0", 6)
+  val navigation   = new Label("Navigation: ", "0", 6)
+  val shields      = new Label("   Shields: ", "0", 6)
+  val weapons      = new Label("   Weapons: ", "0", 6)
+  val timeWidget   = new Label("      time: ", "0", 6)
+  addControl(cursorTarget)
+  addControl(navigation)
+  addControl(shields)
+  addControl(weapons)
+  addControl(timeWidget)
+
+  layout(Size(20, 20))
+}
 
 class FlagshipWindow(size: Size) extends Window(size, Some("Flagship Window")) {
   var time = 0
@@ -71,12 +85,12 @@ class FlagshipWindow(size: Size) extends Window(size, Some("Flagship Window")) {
   val player = new Player
 
   val windowPanel = new Composite()
-  val mainPanel = new Window(Size(80, 40)) with Border
+  val mainPanel = new Window(Size(40, 40)) with Border
   val mapPanel = new Composite(LayoutManager.VERTICAL) with Border
   val insideMapPanel = new Composite() with Border
   val outsideMapPanel = new Composite() with Border
   val detailPanel = new Composite(LayoutManager.VERTICAL) with Border
-  val timeWidget = new Label("time: ", time.toString, 6)
+  val shipControls = new ShipControlsPanel
 
   import LayoutData._
 
@@ -92,7 +106,8 @@ class FlagshipWindow(size: Size) extends Window(size, Some("Flagship Window")) {
   mapPanel.addControl(insideMapPanel)
   mapPanel.addControl(outsideMapPanel)
 
-  detailPanel.addControl(timeWidget)
+  detailPanel.addControl(shipControls)
+
   windowPanel.addControl(mainPanel)
   windowPanel.addControl(mapPanel)
   windowPanel.addControl(detailPanel)
