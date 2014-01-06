@@ -7,10 +7,18 @@ import org.flagship.console.Point
  * Date: 12/18/13
  */
 trait Entity {
+  def name: String
   def position: Point
 }
 
-class Player(var position: Point = Point.ZERO) extends Entity {
+class BaseEntity(val name: String, var position: Point = Point.Origin) extends Entity
+
+object Entity {
+  def None: Entity = new BaseEntity("None")
+}
+
+class Player() extends BaseEntity("Player") {
+
   def up() = {position = position.move(Point.Up)}
   def down() = {position = position.move(Point.Down)}
   def left() = {position = position.move(Point.Left)}

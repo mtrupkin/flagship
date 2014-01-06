@@ -10,9 +10,9 @@ import flagship.console.terminal.Screen
  */
 class Label(label: String, text: => String, length: Int) extends Control {
 
-  override def minSize: Size =  Size(length + label.length, 1)
+    override def minSize: Size =  Size(length + label.length, 1)
 
-  def render(screen: Screen) {
-    screen.write(0, 0, label + text)
-  }
+    def render(screen: Screen) {
+      screen.write(0, 0, label + text)
+    }
 }

@@ -2,6 +2,7 @@ package flagship.console.terminal
 
 import flagship.console.input.ConsoleKey
 import flagship.console.widget.Window
+import java.awt.event.{MouseEvent, MouseAdapter}
 
 
 /**
@@ -17,24 +18,31 @@ class GUIConsole(val terminal: Terminal, val window: Window) {
 
   var consoleKey: Option[ConsoleKey] = None
 
+  val mouseAdapter = new MouseAdapter {
+
+    override def mouseClicked(e: MouseEvent) {
+      window.mouseClicked(terminal.mouse)
+    }
+  }
+
+  terminal.addMouseAdapter(mouseAdapter)
+
   def render() {
     window.render(screen)
     terminal.flush(screen)
   }
 
   def processInput() {
-    for(key <- terminal.key) {
-    println("key: " + key)
+
+    for (key <- terminal.key) {
       window.keyPressed(key)
     }
-  if (terminal.key != consoleKey) {
+    if (terminal.key != consoleKey) {
       consoleKey = terminal.key
-      for(key <- consoleKey) {
-        println("key pressed: " + key.keyValue)
+      for (key <- consoleKey) {
       }
     } else {
-      for(key <- consoleKey) {
-        println("key released: " + key.keyValue)
+      for (key <- consoleKey) {
       }
     }
   }

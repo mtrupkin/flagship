@@ -22,7 +22,9 @@ trait Terminal {
   val terminalSize: Size
   var closed = false
   var key: Option[ConsoleKey] = None
+  var mouse: Point = Point.Origin
 
+  def addMouseAdapter(mouseAdapter: MouseAdapter)
   def flush(screen: Screen)
 }
 
@@ -52,13 +54,20 @@ class SwingTerminal(val terminalSize: Size = new Size(50, 20), windowTitle: Stri
 
   val mouseAdapter = new MouseAdapter {
     override def mouseMoved(e: MouseEvent) {
-      //println(e.getX, e.getY)
+      mouse = new Point(e.getX, e.getY)
+    }
+
+    override def mouseClicked(e: MouseEvent) {
     }
   }
 
   terminalCanvas.addMouseListener(mouseAdapter)
   terminalCanvas.addMouseMotionListener(mouseAdapter)
 
+  def addMouseAdapter(mouseAdapter: MouseAdapter) {
+    terminalCanvas.addMouseListener(mouseAdapter)
+    terminalCanvas.addMouseMotionListener(mouseAdapter)
+  }
   override def closeOperation( ) {
     closed = true
     visible = false

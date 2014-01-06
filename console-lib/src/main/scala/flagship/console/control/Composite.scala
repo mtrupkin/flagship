@@ -61,4 +61,17 @@ class Composite(val layoutManager: LayoutManager = LayoutManager.HORIZONTAL) ext
 
     new Size(width, height)
   }
+
+  override def mouseClicked(mouse: Point) {
+    val m = new Point(mouse.x - position.x, mouse.y - position.y)
+    for( c <- controls ) {
+      if (in(c, m)) {c.mouseClicked(m)}
+    }
+  }
+
+  def in(c: Control, p: Point): Boolean = {
+    (c.position.x >= p.x && c.position.y >= p.y &&
+      c.position.x + c.dimension.width <= p.x &&
+      c.position.y + c.dimension.height <= p.y)
+  }
 }

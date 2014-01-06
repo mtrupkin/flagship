@@ -12,7 +12,7 @@ case class Point(x: Int, y: Int) {
 }
 
 object Point {
-  val ZERO: Point = new Point(0, 0)
+  val Origin: Point = new Point(0, 0)
   val Up: Point = new Point(0, -1)
   val Down: Point = new Point(0, 1)
   val Left: Point = new Point(-1, 0)

@@ -10,12 +10,17 @@ import org.flagship.console.Size
 import org.flagship.console.Size
 import scala.Some
 import flagship.console.widget.{Window, Border, Label}
-import flagship.console.control.Composite
-import flagship.console.terminal.{GUIConsole, SwingTerminal}
+import flagship.console.control.{Control, Composite}
+import flagship.console.terminal.{Screen, GUIConsole, SwingTerminal}
 import flagship.console.layout.{LayoutManager, LayoutData, Layout}
-import model.{Player, CargoModule, TestMap}
+import model._
 import view.MapView
 import flagship.console.input.ConsoleKey
+import flagship.console.layout.LayoutData._
+import scala.Some
+import org.flagship.console.Size
+import scala.Some
+import org.flagship.console.Size
 
 
 class TestWindow(size: Size) extends Window(size, Some("Test Window")) {
@@ -65,18 +70,89 @@ class TestWindow(size: Size) extends Window(size, Some("Test Window")) {
 */
 }
 class ShipControlsPanel extends Composite(LayoutManager.VERTICAL) with Border{
-  val cursorTarget = new Label("    target: ", "0", 6)
-  val navigation   = new Label("Navigation: ", "0", 6)
-  val shields      = new Label("   Shields: ", "0", 6)
-  val weapons      = new Label("   Weapons: ", "0", 6)
-  val timeWidget   = new Label("      time: ", "0", 6)
+  val spacer = new Label("", "", 1)
+  val cursorTarget = new Label("    Frigate-1 [2.00, 76.00] ", "", 6)
+  val targetNone   = new Label("         None [0.00, 0.00] ", "", 6)
+
+  val target1      = new Label("    Frigate-1 [2.00, 76.00] ", "", 6)
+  val target2      = new Label("Dreadnaught-1 [2.00, 76.00] ", "", 6)
+  val target3      = new Label("   Starbase-7 [722.00, 7.00]", "", 6)
+
+  val navigation   = new Label("Destination-", "", 6)
+  val shields      = new Label("    Shields: 53", "", 6)
+  val weapons      = new Label("Weapons - [Lock] [Fire]", "", 6)
+  val weap1        = new Label("Torpedoes-1: ", "", 6)
+  val weap2        = new Label("Phasers-3: ", "", 6)
+  val weap3        = new Label("Phasers-1: ", "", 6)
+
+  addControl(cursorTarget)
+  addControl(spacer)
+  addControl(navigation)
+  addControl(target3)
+  addControl(spacer)
+  addControl(shields)
+  addControl(spacer)
+  addControl(weapons)
+  addControl(weap1)
+  addControl(target1)
+  addControl(weap2)
+  addControl(target2)
+  addControl(weap3)
+  addControl(targetNone)
+}
+
+class ShipPanel2 extends Composite(LayoutManager.VERTICAL) with Border{
+  val spacer = new Label("", "", 1)
+  val targetNone   = "         None"
+
+  val cursorTarget = new Label("    Frigate-1 [2.00, 76.00]", "", 2)
+  val target0      = "    Frigate-1"
+  val target1      = "    Frigate-1"
+  val target2      = "Dreadnaught-1"
+  val target3      = "   Starbase-7"
+
+  val navigation   = new Label("Destination: ", target3, 13)
+  val shields      = new Label("    Shields: 53", "", 6)
+
   addControl(cursorTarget)
   addControl(navigation)
   addControl(shields)
-  addControl(weapons)
-  addControl(timeWidget)
 
-  layout(Size(20, 20))
+ }
+class WeaponControl(weapon: Weapon, length: Int) extends Control {
+  override def minSize: Size =  Size(length + weapon.name.length + 2, 1)
+
+  def render(screen: Screen) {
+    screen.write(0, 0, weapon.name + ": " + weapon.target.name)
+  }
+
+  override def mouseClicked(mouse: Point) {
+    println("mouse clicked")
+  }
+}
+
+class WeaponsPanel extends Composite(LayoutManager.VERTICAL) with Border {
+  controlLayout = Layout(right = GRAB)
+
+  val target1      = new BaseEntity("Frigate-1")
+  val target2      = new BaseEntity("Dreadnaught-1")
+  val target3      = new BaseEntity("Starbase-7")
+
+  val weap1 = new Weapon("Torpedo")
+  val weap2 = new Weapon(" Phaser")
+  weap2.target = target1
+  val weap3 = new Weapon(" Phaser")
+  weap3.target = target2
+
+  val weapons      = new Label("Weapons - [Fire]", "", 6)
+  val weaponControl1 = new WeaponControl(weap1, 13)
+  val weaponControl2 = new WeaponControl(weap2, 13)
+  val weaponControl3 = new WeaponControl(weap3, 13)
+
+  addControl(weapons)
+  addControl(weaponControl1)
+  addControl(weaponControl2)
+  addControl(weaponControl3)
 }
 
 class FlagshipWindow(size: Size) extends Window(size, Some("Flagship Window")) {
@@ -90,7 +166,8 @@ class FlagshipWindow(size: Size) extends Window(size, Some("Flagship Window")) {
   val insideMapPanel = new Composite() with Border
   val outsideMapPanel = new Composite() with Border
   val detailPanel = new Composite(LayoutManager.VERTICAL) with Border
-  val shipControls = new ShipControlsPanel
+  val shipPanel = new ShipPanel2
+  val weaponsPanel = new WeaponsPanel
 
   import LayoutData._
 
@@ -100,13 +177,16 @@ class FlagshipWindow(size: Size) extends Window(size, Some("Flagship Window")) {
   insideMapPanel.controlLayout = Layout(bottom = GRAB, right = GRAB)
   outsideMapPanel.controlLayout = Layout(bottom = GRAB, right = GRAB)
   detailPanel.controlLayout = Layout(bottom = GRAB, right = SNAP)
+  shipPanel.controlLayout = Layout(right = GRAB)
+  weaponsPanel.controlLayout = Layout(right = GRAB) // TODO: fix right grab for vertical layout
 
   mainPanel.addControl(new MapView(new TestMap, player.position) with Border)
 
   mapPanel.addControl(insideMapPanel)
   mapPanel.addControl(outsideMapPanel)
 
-  detailPanel.addControl(shipControls)
+  detailPanel.addControl(shipPanel)
+  detailPanel.addControl(weaponsPanel)
 
   windowPanel.addControl(mainPanel)
   windowPanel.addControl(mapPanel)
@@ -134,9 +214,9 @@ class FlagshipWindow(size: Size) extends Window(size, Some("Flagship Window")) {
 }
 
 object RamaApp extends App {
-  val size = Size(100, 47)
-  val term = new SwingTerminal(Size(100, 42), "Rama Terminal")
-  val window = new FlagshipWindow(Size(100, 42))
+  val size = Size(120, 42)
+  val term = new SwingTerminal(size, "Rama Terminal")
+  val window = new FlagshipWindow(size)
 
   val gui = new GUIConsole(term, window)
 

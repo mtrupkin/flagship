@@ -22,7 +22,7 @@ abstract class LayoutManager {
 
 class HLayout extends LayoutManager {
   def flow(controls: List[Control]) {
-    var lastPos = Point.ZERO
+    var lastPos = Point.Origin
     for (c <- controls) {
       c.position = lastPos
       lastPos = Point(c.right, 0)
@@ -49,7 +49,7 @@ class HLayout extends LayoutManager {
 
 class VLayout extends LayoutManager {
   def flow(controls: List[Control]) {
-    var lastPos = Point.ZERO
+    var lastPos = Point.Origin
     for (c <- controls) {
       c.position = lastPos
       lastPos = Point(0, c.bottom)

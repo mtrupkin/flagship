@@ -6,6 +6,10 @@ import flagship.console.terminal.Screen
 import flagship.console.layout.Layout
 import flagship.console.input.ConsoleKey
 
+trait Update {
+  def update(elapsedTime: Int): Unit = {}
+}
+
 /**
  * User: mtrupkin
  * Date: 7/6/13
@@ -14,7 +18,7 @@ trait Control extends Update {
   def minSize: Size = Size(0, 0)
 
   var dimension: Size = minSize
-  var position = Point.ZERO
+  var position = Point.Origin
 
   def right: Int = position.x + dimension.width
   def bottom: Int = position.y + dimension.height
@@ -24,6 +28,7 @@ trait Control extends Update {
   def render(screen: Screen)
 
   def keyPressed(key: ConsoleKey) {}
+  def mouseClicked(mouse: Point) {}
 
   def compact() {
     dimension = minSize
@@ -46,8 +51,4 @@ trait Control extends Update {
       position = position.copy(y = size.height - dimension.height)
     }
   }
-}
-
-trait Update {
-  def update(elapsedTime: Int): Unit = {}
 }
