@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.web.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<TabPane fx:id="tabPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" styleClass="dark" stylesheets="@Console.css"  xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8">
+  <tabs>
+    <Tab text="Intro">
+         <content>
+            <WebView fx:id="intro" prefHeight="200.0" prefWidth="200.0" />
+         </content>
+    </Tab>
+      <Tab text="Combat">
+         <content>
+            <WebView fx:id="combat" prefHeight="200.0" prefWidth="200.0" />
+         </content>
+      </Tab>
+    <Tab text="Controls">
+         <content>
+            <WebView fx:id="controls" prefHeight="200.0" prefWidth="200.0" />
+         </content>
+    </Tab>
+      <Tab text="Credits">
+          <content>
+              <WebView fx:id="credits" prefHeight="200.0" prefWidth="200.0" />
+          </content>
+      </Tab>
+  </tabs>
+</TabPane>

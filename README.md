@@ -1,4 +1,4 @@
-flagship
-========
+Flagship
+=========================
 
 Starship Combat
