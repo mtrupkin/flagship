@@ -9,7 +9,8 @@ import javafx.util.Duration
 
 import me.mtrupkin.console.{ConsoleKey, Modifiers}
 import me.mtrupkin.core.{Point, Points, Size}
-import model.{WorldTracker, World}
+import model.space.{Sector, Universe}
+import model.{UniverseTracker}
 
 import scalafx.Includes._
 import scalafx.scene.{control => sfxc, input => sfxi, layout => sfxl}
@@ -43,7 +44,7 @@ trait Intro { self: FlagshipController =>
     }
 
     def continueGame() = {
-      changeState(new GameController(new WorldTracker))
+      changeState(new GameController(new Universe(Sector()) with UniverseTracker))
     }
 
     def handleContinueGame(event: ActionEvent) = continueGame()

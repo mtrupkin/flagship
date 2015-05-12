@@ -7,7 +7,8 @@ import javafx.scene.layout.Pane
 import me.mtrupkin.console._
 import me.mtrupkin.control.ConsoleFx
 import me.mtrupkin.core.{Point, Size}
-import model.WorldTracker
+import model.UniverseTracker
+import model.space.Universe
 
 import scala.util.{Failure, Success, Try}
 import scalafx.Includes._
@@ -17,7 +18,7 @@ import scalafx.scene.{control => sfxc, input => sfxi, layout => sfxl, shape => s
  * Created by mtrupkin on 12/15/2014.
  */
 trait Game { self: FlagshipController =>
-  class GameController(val world: WorldTracker) extends ControllerState {
+  class GameController(val world: Universe with UniverseTracker) extends ControllerState {
     val name = "Game"
 
     @FXML var label1: Label = _
@@ -27,15 +28,22 @@ trait Game { self: FlagshipController =>
     @FXML var targetDescriptionText: Label = _
     @FXML var targetPositionText: Label = _
     @FXML var consolePane: Pane = _
+    @FXML var consolePane2: Pane = _
     @FXML var rootPane: Pane = _
 
     var console: ConsoleFx = _
+    var console2: ConsoleFx = _
     var screen: Screen = _
+    var screen2: Screen = _
 
     def initialize(): Unit = {
-      val consoleSize = Size(80, 40)
-      console = new ConsoleFx(consoleSize)
+      val consoleSize1 = Size(80, 40)
+      val consoleSize2 = Size(60, 30)
+      console = new ConsoleFx(consoleSize1)
       console.setStyle("-fx-border-color: white")
+
+      console2 = new ConsoleFx(consoleSize2)
+      console2.setStyle("-fx-border-color: white")
 
       new sfxl.Pane(rootPane) {
         filterEvent(sfxi.KeyEvent.Any) {
@@ -49,24 +57,29 @@ trait Game { self: FlagshipController =>
         onMouseExited = (e: sfxi.MouseEvent) => handleMouseExit(e)
       }
 
-      screen = Screen(consoleSize)
+      screen = Screen(consoleSize1)
+      screen2 = Screen(consoleSize2)
       consolePane.getChildren.clear()
       consolePane.getChildren.add(console)
       consolePane.setFocusTraversable(true)
+
+      consolePane2.getChildren.clear()
+      consolePane2.getChildren.add(console2)
+      consolePane2.setFocusTraversable(true)
 
       timer.start()
     }
 
     override def update(elapsed: Int): Unit = {
       // TODO: update and render at different rates
+
       world.update(elapsed)
       world.render(screen)
-
-      world.renderPath(screen, world.workerPrototype, world.target)
+      world.render2(screen2)
 
       console.draw(screen)
+      console2.draw(screen2)
 
-      label1.setText(s"${world.home.store}")
     }
 
     implicit def itos(int: Int): String = int.toString
@@ -77,14 +90,12 @@ trait Game { self: FlagshipController =>
 
     def handleMouseClicked(mouseEvent: sfxi.MouseEvent): Unit = {
       for( s <- mouseToPoint(mouseEvent)) {
-        world.addSite(s)
+
       }
     }
 
     def updateMouseInfo(w: Point): Unit = {
       targetPositionText.setText(s"${w.x}:${w.y}")
-      label2.setText(s"${world(w).cost}")
-
     }
 
     def updateActionText(name: String, description: String): Unit = {

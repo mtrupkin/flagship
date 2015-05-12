@@ -14,7 +14,7 @@ import scala.util.Random
 trait Square {
   def name: String
   def sc: ScreenChar
-  def move: Boolean
+  def move: Boolean = true
   var cost: Int = 1
 }
 
@@ -28,38 +28,25 @@ trait GameMap {
 
 object Bounds extends Square {
   val name = "Out Of Bounds"
-  val move = false
-  cost = Int.MaxValue
+  override val move = false
   def sc = ScreenChar('\u25A0', fg = Colors.White)
 }
 
-object Floor {
-  def char = '\u00B7'
+
+class Space extends Square {
+  val name = "Space"
+  val sc = ScreenChar('\u00B7', fg = Colors.White)
 }
 
-class Floor extends Square {
-  val name = "Floor"
-  val move = true
-  cost = 100
-  def color  = 240 * (100 - cost)/100 + 15
-  def sc = ScreenChar(Floor.char, fg = RGB(color, color, color))
+class Star(val sc: ScreenChar) extends Square {
+  val name = "Star"
 }
-
-class Wall(val sc: ScreenChar) extends Square {
-  val name = "Wall"
-  val move = false
-}
-
-
 
 object Square {
   implicit def toTile(s: ScreenChar): Square = {
     s.c match {
-      case ' ' | '.' | 'E' => new Floor
-      case _ => new Wall(s)
+      case ' ' => new Space
+      case _ => new Star(s)
     }
   }
-  def floor(): Square = new Floor
-  val unexplored = new Wall(' ')
-  def wall(sc: ScreenChar) = new Wall(sc)
 }

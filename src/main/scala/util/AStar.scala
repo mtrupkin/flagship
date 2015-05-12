@@ -1,7 +1,7 @@
 package util
 
 import me.mtrupkin.core.{Point, Size}
-import model.{Agent, World, GameMap}
+import model.{GameMap, Agent}
 
 
 import scala.Array._
@@ -10,7 +10,7 @@ import scala.collection.mutable
 /**
  * Created by mtrupkin on 12/31/2014.
  */
-class AStar(val map: World, val size: Size) {
+class AStar(val map: GameMap, val size: Size) {
   class Node(val p: Point) extends Ordered[Node] {
     // path cost
     var cost = 0.0d

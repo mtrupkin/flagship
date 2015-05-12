@@ -32,15 +32,10 @@
    <top>
       <VBox alignment="CENTER" BorderPane.alignment="CENTER">
          <children>
-            <Label id="title-main" fx:id="titleText" alignment="CENTER" contentDisplay="CENTER" style="-fx-text-fill: blue;" styleClass="title-main" text="Tomorrow World" BorderPane.alignment="CENTER">
+            <Label id="title-main" fx:id="titleText" alignment="CENTER" contentDisplay="CENTER" style="-fx-text-fill: blue;" styleClass="title-main" text="Flagship" BorderPane.alignment="CENTER">
                <BorderPane.margin>
                   <Insets top="50.0" />
                </BorderPane.margin>
-            </Label>
-            <Label id="title-sub" text="Mile's Planet">
-               <VBox.margin>
-                  <Insets top="25.0" />
-               </VBox.margin>
             </Label>
          </children>
          <BorderPane.margin>

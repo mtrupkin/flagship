@@ -11,7 +11,8 @@
 <GridPane fx:id="rootPane" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1280.0" stylesheets="@Console.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <columnConstraints>
       <ColumnConstraints hgrow="NEVER" minWidth="10.0" />
-      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+      <ColumnConstraints hgrow="ALWAYS" />
+      <ColumnConstraints fillWidth="false" hgrow="SOMETIMES" minWidth="10.0" />
    </columnConstraints>
    <rowConstraints>
       <RowConstraints minHeight="10.0" vgrow="NEVER" />
@@ -19,6 +20,27 @@
    </rowConstraints>
    <children>
       <Pane fx:id="consolePane" maxHeight="-Infinity" maxWidth="-Infinity" styleClass="dark-background" GridPane.halignment="LEFT" GridPane.valignment="TOP" />
+      <VBox GridPane.columnIndex="2">
+         <children>
+            <Pane fx:id="consolePane2" maxHeight="-Infinity" maxWidth="-Infinity" styleClass="dark-background" GridPane.columnIndex="2" />
+            <GridPane style="-fx-border-color: white;" styleClass="dark">
+               <children>
+                  <Label fx:id="targetPositionText1" />
+                  <Label fx:id="label11" text="Label" GridPane.rowIndex="1" />
+                  <Label fx:id="label21" text="Label" GridPane.rowIndex="2" />
+               </children>
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+            </GridPane>
+         </children>
+      </VBox>
       <VBox styleClass="dark" GridPane.columnIndex="1">
          <children>
             <GridPane style="-fx-border-color: white;">
@@ -38,7 +60,7 @@
                </children>
             </GridPane>
          </children></VBox>
-      <VBox styleClass="dark" GridPane.columnSpan="2" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
+      <VBox styleClass="dark" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
          <children>
             <GridPane style="-fx-border-color: white;" VBox.vgrow="ALWAYS">
               <columnConstraints>
