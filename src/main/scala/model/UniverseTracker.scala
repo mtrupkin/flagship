@@ -2,7 +2,7 @@ package model
 
 import me.mtrupkin.console.{Colors, ScreenChar, Screen}
 import me.mtrupkin.core.{Points, Point}
-import model.space.{ViewableDiscreteSystem, ViewableBodySystem, StarSystem, Universe}
+import model.space._
 import util.{Path, AStar}
 
 
@@ -12,18 +12,30 @@ import util.{Path, AStar}
 trait UniverseTracker {
   self: Universe =>
 
-  var target: Point = Points.Origin
+  var target1: Point = Points.Origin
+  var target2: Point = Points.Origin
 
-  val viewableSector = new ViewableDiscreteSystem(sector)
+  var view1: ViewableSystem  = new ViewableDiscreteSystem(sector)
+  var view2: ViewableSystem = new ViewableBodySystem(StarSystem())
 
   def render(screen: Screen): Unit = {
-
-    viewableSector.render(screen)
+    view1.render(screen)
   }
 
-  val starSystem = new ViewableBodySystem(StarSystem())
-
   def render2(screen: Screen): Unit = {
-    starSystem.render(screen)
+    view2.render(screen)
+  }
+
+  def selectTarget1(screen1: Screen, screen2: Screen, p: Point): Unit = {
+    view1.selectView(screen1.size, p) match {
+      case Some(view) => {
+        screen2.clear()
+        view2 = view
+      }
+      case _ =>
+    }
+  }
+
+  def selectTarget2(p: Point): Unit = {
   }
 }

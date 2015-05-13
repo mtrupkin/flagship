@@ -16,7 +16,7 @@ class StarSystem(val name: String, val position: Point, val star: Star, val plan
 
 object StarSystem {
   def apply(): StarSystem = {
-    val planetCount = Random.nextInt(5)
+    val planetCount = 1 + Random.nextInt(5)
     val planets = for (i <- 0 to planetCount) yield Planet()
     new StarSystem("Alpha", Helper.pos(), Star(), planets)
   }

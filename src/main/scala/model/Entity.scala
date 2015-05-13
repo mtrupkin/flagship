@@ -40,60 +40,64 @@ object Entity {
 
 trait ViewableSystem {
   def render(screen: Screen): Unit
+  def selectView(screenSize: Size, p: Point): Option[ViewableSystem]
 }
 
 class ViewableDiscreteSystem(val discreteSystem: DiscreteSystem) extends ViewableSystem {
   import discreteSystem._
 
+  def toScreen(screenSize: Size, p0: Point): Point = {
+    val rx = screenSize.width/size.width
+    val ry = screenSize.height/size.height
+
+    Point(p0.x/rx, p0.y/ry)
+  }
+
   def render(screen: Screen): Unit = {
-    def toScreen(p0: Point): Point = {
-      val rx = screen.size.width
-      val ry = screen.size.height
-
-      Point(p0.x/rx, p0.y/ry)
-    }
-
     for {
       entity <- entities
       position = entity.position
-    } screen(toScreen(position)) = Entity.draw(entity)
+    } screen(toScreen(screen.size, position)) = Entity.draw(entity)
+  }
+
+  def selectView(screenSize: Size, p: Point): Option[ViewableSystem] = {
+    val selected = entities.find( e => toScreen(screenSize, e.position) == p)
+    selected match {
+      case Some(e: DiscreteSystem) => Some(new ViewableDiscreteSystem(e))
+      case Some(e: BodySystem) => Some(new ViewableBodySystem(e))
+      case _ => None
+    }
   }
 }
 
 class ViewableBodySystem(val bodySystem: BodySystem) extends ViewableSystem {
   import bodySystem._
 
-  def render(screen: Screen): Unit = {
-    def toScreen(v: Vector): Point = {
-      val rx = screen.size.width / 2
-      val ry = screen.size.height / 2
-
-      val r =  v / radius
-
-      implicit def toInt(d: Double): Int = Math.floor(d).toInt
-      Point(rx/r.x, ry/r.y)
-    }
-
-    for {
-      entity <- entities
-      position = entity.position
-    } screen(toScreen(position)) = Entity.draw(entity)
-  }
-}
-
-trait ViewableEntity {
-  def screenSize: Size
-  def radius: Int
-
-  def draw(p: Point): ScreenChar
-
-  def toScreen(v: Vector): Point = {
+  def toScreen(screenSize: Size, v: Vector): Point = {
     val rx = screenSize.width / 2
     val ry = screenSize.height / 2
 
-    val r =  v / radius
+    val r = Vector(v.x*rx, v.y*ry) / radius
 
     implicit def toInt(d: Double): Int = Math.floor(d).toInt
-    Point(rx/r.x, ry/r.y)
+    val p = Point(r.x + rx, r.y + ry)
+    p
+  }
+
+
+  def render(screen: Screen): Unit = {
+    for {
+      entity <- entities
+      position = entity.position
+    } screen(toScreen(screen.size, position)) = Entity.draw(entity)
+  }
+
+  def selectView(screenSize: Size, p: Point): Option[ViewableSystem] = {
+    val selected = entities.find(e => toScreen(screenSize, e.position) == p)
+    selected match {
+      case Some(e: DiscreteSystem) => Some(new ViewableDiscreteSystem(e))
+      case Some(e: BodySystem) => Some(new ViewableBodySystem(e))
+      case _ => None
+    }
   }
 }

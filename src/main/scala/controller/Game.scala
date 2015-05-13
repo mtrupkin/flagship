@@ -57,6 +57,12 @@ trait Game { self: FlagshipController =>
         onMouseExited = (e: sfxi.MouseEvent) => handleMouseExit(e)
       }
 
+      new sfxl.Pane(console2) {
+        onMouseClicked = (e: sfxi.MouseEvent) => handleMouseClicked2(e)
+        onMouseMoved = (e: sfxi.MouseEvent) => handleMouseMove2(e)
+        onMouseExited = (e: sfxi.MouseEvent) => handleMouseExit2(e)
+      }
+
       screen = Screen(consoleSize1)
       screen2 = Screen(consoleSize2)
       consolePane.getChildren.clear()
@@ -90,7 +96,13 @@ trait Game { self: FlagshipController =>
 
     def handleMouseClicked(mouseEvent: sfxi.MouseEvent): Unit = {
       for( s <- mouseToPoint(mouseEvent)) {
+        world.selectTarget1(screen, screen2, s)
+      }
+    }
 
+    def handleMouseClicked2(mouseEvent: sfxi.MouseEvent): Unit = {
+      for( s <- mouseToPoint(mouseEvent)) {
+        world.selectTarget2(s)
       }
     }
 
@@ -105,12 +117,27 @@ trait Game { self: FlagshipController =>
 
     def handleMouseMove(mouseEvent: sfxi.MouseEvent): Unit = {
       for( s <- mouseToPoint(mouseEvent)) {
-        world.target = s
+        world.target1 = s
+        world.selectTarget1(screen, screen2, s)
         updateMouseInfo(s)
       }
     }
 
     def handleMouseExit(mouseEvent: sfxi.MouseEvent): Unit = {
+      targetNameText.setText("")
+      targetActionText.setText("")
+      targetDescriptionText.setText("")
+      targetPositionText.setText("")
+    }
+
+    def handleMouseMove2(mouseEvent: sfxi.MouseEvent): Unit = {
+      for( s <- mouseToPoint(mouseEvent)) {
+        world.target2 = s
+        updateMouseInfo(s)
+      }
+    }
+
+    def handleMouseExit2(mouseEvent: sfxi.MouseEvent): Unit = {
       targetNameText.setText("")
       targetActionText.setText("")
       targetDescriptionText.setText("")
