@@ -26,11 +26,22 @@ trait UniverseTracker {
     view2.render(screen)
   }
 
-  def selectTarget1(screen1: Screen, screen2: Screen, p: Point): Unit = {
+  def highlightTarget1(screen1: Screen, screen2: Screen, p: Point): Unit = {
     view1.selectView(screen1.size, p) match {
       case Some(view) => {
         screen2.clear()
         view2 = view
+      }
+      case _ =>
+    }
+  }
+  def selectTarget1(screen1: Screen, screen2: Screen, p: Point): Unit = {
+    view1.selectView(screen1.size, p) match {
+      case Some(view) => {
+        screen1.clear()
+        screen2.clear()
+        view1 = view
+//        view2 = view
       }
       case _ =>
     }

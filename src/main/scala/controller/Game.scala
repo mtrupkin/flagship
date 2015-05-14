@@ -118,7 +118,7 @@ trait Game { self: FlagshipController =>
     def handleMouseMove(mouseEvent: sfxi.MouseEvent): Unit = {
       for( s <- mouseToPoint(mouseEvent)) {
         world.target1 = s
-        world.selectTarget1(screen, screen2, s)
+        world.highlightTarget1(screen, screen2, s)
         updateMouseInfo(s)
       }
     }
