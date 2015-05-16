@@ -37,12 +37,11 @@ trait Game { self: FlagshipController =>
     var screen2: Screen = _
 
     def initialize(): Unit = {
-      val consoleSize1 = Size(80, 40)
-      val consoleSize2 = Size(60, 30)
-      console = new ConsoleFx(consoleSize1)
+      val consoleSize = Size(40, 20)
+      console = new ConsoleFx(consoleSize, fontSize = 24)
       console.setStyle("-fx-border-color: white")
 
-      console2 = new ConsoleFx(consoleSize2)
+      console2 = new ConsoleFx(consoleSize, fontSize = 24)
       console2.setStyle("-fx-border-color: white")
 
       new sfxl.Pane(rootPane) {
@@ -63,8 +62,8 @@ trait Game { self: FlagshipController =>
         onMouseExited = (e: sfxi.MouseEvent) => handleMouseExit2(e)
       }
 
-      screen = Screen(consoleSize1)
-      screen2 = Screen(consoleSize2)
+      screen = Screen(consoleSize)
+      screen2 = Screen(consoleSize)
       consolePane.getChildren.clear()
       consolePane.getChildren.add(console)
       consolePane.setFocusTraversable(true)

@@ -12,13 +12,13 @@ import scala.util.Random
 class Sector(val name: String, val position: Point, val starSystems: Seq[StarSystem]) extends DiscreteSystem {
   def update(elapsed: Int): Unit = {}
 
-  def size: Size = Size(80, 40)
+  def size: Size = Size(40, 20)
 
   def entities: Seq[DiscreteEntity] = starSystems
 }
 
 object Helper {
-  def pos(): Point = Point(Random.nextInt(50), Random.nextInt(50))
+  def pos(): Point = Point(Random.nextInt(40), Random.nextInt(20))
   def vec(): Vector = Vector(Random.nextDouble()*100-50, Random.nextDouble()*100-50)
 }
 
