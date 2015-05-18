@@ -44,7 +44,7 @@ trait Intro { self: FlagshipController =>
     }
 
     def continueGame() = {
-      changeState(new GameController(new Universe(Sector()) with UniverseTracker))
+      changeState(new SystemViewController(new Universe(Sector()) with UniverseTracker))
     }
 
     def handleContinueGame(event: ActionEvent) = continueGame()

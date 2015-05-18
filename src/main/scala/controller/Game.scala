@@ -177,4 +177,3 @@ trait Game { self: FlagshipController =>
     }
   }
 }
-

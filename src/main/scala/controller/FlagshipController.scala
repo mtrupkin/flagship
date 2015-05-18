@@ -7,7 +7,8 @@ import me.mtrupkin.controller.Controller
  */
 trait FlagshipController extends Controller
   with Intro
-  with Game {
+  with Game
+  with SystemView {
 
   def exit(): Unit =  stage.close()
 
