@@ -15,18 +15,18 @@ trait DiscreteEntity extends Entity {
   def position: Point
 }
 
-trait Body extends Entity {
+trait BodyEntity extends Entity {
   def position: Vector
 }
 
-trait DiscreteSystem {
+trait DiscreteSystem extends Entity {
   def size: Size
   def entities: Seq[DiscreteEntity]
 }
 
-trait BodySystem {
+trait BodySystem extends Entity  {
   def radius: Int
-  def entities: Seq[Body]
+  def entities: Seq[BodyEntity]
 }
 
 object Entity {
@@ -39,29 +39,28 @@ object Entity {
 }
 
 trait ViewableSystem {
+  def entity: Entity
   def render(screen: Screen): Unit
-  def selectView(screenSize: Size, p: Point): Option[ViewableSystem]
+  def selectTarget(p: Point): Option[ViewableSystem]
+  def target(p: Point): Option[Entity]
 }
 
 class ViewableDiscreteSystem(val discreteSystem: DiscreteSystem) extends ViewableSystem {
   import discreteSystem._
 
-  def toScreen(screenSize: Size, p0: Point): Point = {
-    val rx = screenSize.width/size.width
-    val ry = screenSize.height/size.height
-
-    Point(p0.x/rx, p0.y/ry)
-  }
+  val entity = discreteSystem
 
   def render(screen: Screen): Unit = {
     for {
       entity <- entities
       position = entity.position
-    } screen(toScreen(screen.size, position)) = Entity.draw(entity)
+    } screen(position) = Entity.draw(entity)
   }
 
-  def selectView(screenSize: Size, p: Point): Option[ViewableSystem] = {
-    val selected = entities.find( e => toScreen(screenSize, e.position) == p)
+  def target(p: Point): Option[Entity] = entities.find( _.position == p)
+  
+  def selectTarget(p: Point): Option[ViewableSystem] = {
+    val selected = target(p)
     selected match {
       case Some(e: DiscreteSystem) => Some(new ViewableDiscreteSystem(e))
       case Some(e: BodySystem) => Some(new ViewableBodySystem(e))
@@ -73,9 +72,12 @@ class ViewableDiscreteSystem(val discreteSystem: DiscreteSystem) extends Viewabl
 class ViewableBodySystem(val bodySystem: BodySystem) extends ViewableSystem {
   import bodySystem._
 
-  def toScreen(screenSize: Size, v: Vector): Point = {
-    val rx = screenSize.width / 2
-    val ry = screenSize.height / 2
+  val entity = bodySystem
+  val consoleSize: Size = Size(40, 20)
+
+  def toConsole(v: Vector): Point = {
+    val rx = consoleSize.width / 2
+    val ry = consoleSize.height / 2
 
     val r = Vector(v.x*rx, v.y*ry) / radius
 
@@ -84,16 +86,17 @@ class ViewableBodySystem(val bodySystem: BodySystem) extends ViewableSystem {
     p
   }
 
+  def target(p: Point): Option[Entity] = entities.find(e => toConsole(e.position) == p)
 
   def render(screen: Screen): Unit = {
     for {
       entity <- entities
       position = entity.position
-    } screen(toScreen(screen.size, position)) = Entity.draw(entity)
+    } screen(toConsole(position)) = Entity.draw(entity)
   }
 
-  def selectView(screenSize: Size, p: Point): Option[ViewableSystem] = {
-    val selected = entities.find(e => toScreen(screenSize, e.position) == p)
+  def selectTarget(p: Point): Option[ViewableSystem] = {
+    val selected = target(p)
     selected match {
       case Some(e: DiscreteSystem) => Some(new ViewableDiscreteSystem(e))
       case Some(e: BodySystem) => Some(new ViewableBodySystem(e))

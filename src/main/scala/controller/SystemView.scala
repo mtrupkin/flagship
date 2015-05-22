@@ -8,7 +8,7 @@ import me.mtrupkin.console._
 import me.mtrupkin.control.ConsoleFx
 import me.mtrupkin.core.{Point, Size}
 import model.UniverseTracker
-import model.space.Universe
+import model.space.{ViewableSystem, Universe}
 
 import scala.util.{Failure, Success, Try}
 import scalafx.scene.{input, layout}
@@ -19,10 +19,11 @@ import scalafx.scene.{control => sfxc, input => sfxi, layout => sfxl, shape => s
  * Created by mtrupkin on 5/16/2015.
  */
 trait SystemView { self: FlagshipController =>
-  class SystemViewController(val world: Universe with UniverseTracker) extends ControllerState {
+  class SystemViewController(val system: ViewableSystem) extends ControllerState {
     val name = "SystemView"
     @FXML var headerLabel: Label = _
     @FXML var targetPositionLabel: Label = _
+    @FXML var targetNameLabel: Label = _
     @FXML var consoleParent: Pane = _
 
     var console: ConsoleFx = _
@@ -40,6 +41,16 @@ trait SystemView { self: FlagshipController =>
       screen = Screen(consoleSize)
       consoleParent.getChildren.add(console)
       consoleParent.setFocusTraversable(true)
+
+
+      headerLabel.setText(system.entity.name)
+
+      timer.start()
+    }
+
+    override def update(elapsed: Int): Unit = {
+      system.render(screen)
+      console.draw(screen)
     }
 
     def handleMouseClicked(mouseEvent: sfxi.MouseEvent): Unit = {
@@ -59,7 +70,13 @@ trait SystemView { self: FlagshipController =>
     }
 
     def updateMouseInfo(w: Point): Unit = {
-      targetPositionLabel.setText(s"${w.x}:${w.y}")
+      targetPositionLabel.setText(s"[${w.x}:${w.y}]")
+
+      for {
+        target <- system.target(w)
+        name = target.name
+      } { targetNameLabel.setText(s"$name")}
+
     }
 
     def mouseToPoint(mouseEvent: sfxi.MouseEvent): Option[Point] = console.toScreen(mouseEvent.x, mouseEvent.y)

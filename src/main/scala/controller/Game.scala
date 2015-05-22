@@ -84,7 +84,6 @@ trait Game { self: FlagshipController =>
 
       console.draw(screen)
       console2.draw(screen2)
-
     }
 
     implicit def itos(int: Int): String = int.toString
@@ -117,7 +116,7 @@ trait Game { self: FlagshipController =>
     def handleMouseMove(mouseEvent: sfxi.MouseEvent): Unit = {
       for( s <- mouseToPoint(mouseEvent)) {
         world.target1 = s
-        world.highlightTarget1(screen, screen2, s)
+        world.highlightTarget1(s)
         updateMouseInfo(s)
       }
     }

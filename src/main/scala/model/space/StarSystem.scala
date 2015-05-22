@@ -18,6 +18,13 @@ object StarSystem {
   def apply(): StarSystem = {
     val planetCount = 2 + Random.nextInt(5)
     val planets = for (i <- 0 to planetCount) yield Planet()
-    new StarSystem("Alpha", Helper.pos(), Star(), planets)
+
+    val name = for {
+      i <- 0 to 5
+      c = Random.nextPrintableChar()
+      if c.isLetter
+    } yield c
+
+    new StarSystem(name.mkString, Helper.pos(), Star(), planets)
   }
 }

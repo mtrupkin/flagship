@@ -31,7 +31,7 @@ object Sector {
 }
 
 
-class Planet(val name: String, val position: Vector) extends Body {
+class Planet(val name: String, val position: Vector) extends BodyEntity {
   def update(elapsed: Int): Unit = {}
 }
 
