@@ -1,12 +1,9 @@
-package model
+package core
 
-import me.mtrupkin.console.Colors._
-import me.mtrupkin.console.{RGB, Colors, Screen, ScreenChar}
-import me.mtrupkin.core.{Points, Matrix, Point, Size}
+import me.mtrupkin.console.{Colors, ScreenChar}
+import me.mtrupkin.core.{Point, Size}
 
 import scala.Array._
-import scala.collection.mutable.HashMap
-import scala.util.Random
 
 /**
  * Created by mtrupkin on 12/14/2014.

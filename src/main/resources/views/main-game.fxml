@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<BorderPane
+        fx:id="rootPane"
+        maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+        prefHeight="400.0" prefWidth="600.0"
+        stylesheets="@console.css"
+        styleClass="dark-background"
+        xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" >
+    <left><fx:include fx:id="entity1" source="entity.fxml" /></left>
+    <right><fx:include fx:id="entity2" source="entity.fxml"  /></right>
+</BorderPane>

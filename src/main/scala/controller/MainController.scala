@@ -5,10 +5,9 @@ import me.mtrupkin.controller.Controller
 /**
  * Created by mtrupkin on 5/3/2015.
  */
-trait FlagshipController extends Controller
+trait MainController extends Controller
   with Intro
-  with Game
-  with SystemView {
+  with Game {
 
   def exit(): Unit =  stage.close()
 

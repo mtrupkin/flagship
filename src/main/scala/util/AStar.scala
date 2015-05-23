@@ -1,7 +1,7 @@
 package util
 
+import core.GameMap
 import me.mtrupkin.core.{Point, Size}
-import model.{GameMap, Agent}
 
 
 import scala.Array._
@@ -64,14 +64,14 @@ class AStar(val map: GameMap, val size: Size) {
     * agent's starting position is included in the returned path
     * the returned path is generally one of many cost equivalent optimal paths
     * if the destination is not reachable, an empty list is returned
-    * @param agent object that is moving
+    * @param p0 object that is moving
     * @param p destination of search
     * @param maxSearchDistance furthest distance to search
   */
-  def search(agent: Agent, p: Point, maxSearchDistance: Int = 100): Seq[Point] = {
+  def search(p0: Point, p: Point, maxSearchDistance: Int = 100): Seq[Point] = {
     // cannot move to target
     if (!map(p).move) return Nil
-    val p0: Point = agent.position
+
     // already at target
     if (p == p0) return Seq(p)
 
@@ -145,7 +145,7 @@ class AStar(val map: GameMap, val size: Size) {
             // step (i.e. to the open list)
             if (!neighbour.open && !neighbour.closed) {
               neighbour.cost = nextStepCost
-              neighbour.heuristic = heuristic(agent, np, p)
+              neighbour.heuristic = heuristic(np, p)
               maxDepth = Math.max(maxDepth, neighbour.setParent(current))
               addToOpen(neighbour)
             }
@@ -173,7 +173,7 @@ class AStar(val map: GameMap, val size: Size) {
     walk(List(), targetNode).toSeq
   }
 
-  def heuristic(agent: Agent, p0: Point, p: Point): Double = {
+  def heuristic(p0: Point, p: Point): Double = {
     val d = p - p0
     Math.sqrt((d.x * d.x) + (d.y * d.y))
   }

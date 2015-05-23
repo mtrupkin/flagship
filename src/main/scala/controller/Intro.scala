@@ -9,8 +9,8 @@ import javafx.util.Duration
 
 import me.mtrupkin.console.{ConsoleKey, Modifiers}
 import me.mtrupkin.core.{Point, Points, Size}
-import model.space.{Sector, Universe}
-import model.{UniverseTracker}
+import model.Universe
+import model.{Sector, UniverseTracker}
 
 import scalafx.Includes._
 import scalafx.scene.{control => sfxc, input => sfxi, layout => sfxl}
@@ -21,10 +21,10 @@ import scalafx.scene.{control => sfxc, input => sfxi, layout => sfxl}
  */
 
 
-trait Intro { self: FlagshipController =>
+trait Intro { self: MainController =>
 
   class IntroController extends ControllerState {
-    val name = "Intro"
+    val name = "intro"
 
     @FXML var pane: Pane = _
     @FXML var continueGameButton: Button = _
@@ -45,7 +45,7 @@ trait Intro { self: FlagshipController =>
 
     def continueGame() = {
       val universe = new Universe(Sector()) with UniverseTracker
-      changeState(new SystemViewController(universe.view1))
+      changeState(new GameController(universe))
     }
 
     def handleContinueGame(event: ActionEvent) = continueGame()

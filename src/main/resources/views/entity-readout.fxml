@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox stylesheets="@console.css" styleClass="dark"
+      xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="component.EntityReadoutController">
+   <children>
+      <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity">
+        <columnConstraints>
+          <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" percentWidth="30.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+        </rowConstraints>
+         <children>
+            <Label text="Position:" GridPane.hgrow="NEVER" />
+            <Label text="Distance:" GridPane.rowIndex="1" />
+            <Label text="Type:" GridPane.rowIndex="2" />
+            <Label fx:id="position" GridPane.columnIndex="1" />
+            <Label fx:id="distance" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Label fx:id="typeName" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Label text="ID:" GridPane.rowIndex="3" />
+            <Label fx:id="id" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Label text="Name:" GridPane.rowIndex="4" />
+            <Label fx:id="name" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+         </children>
+      </GridPane>
+   </children>
+</VBox>

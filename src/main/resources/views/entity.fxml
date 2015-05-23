@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="component.EntityController" stylesheets="@console.css" >
+   <children>
+     <StackPane fx:id="consoleParent" prefHeight="150.0" prefWidth="200.0" style="-fx-border-color: white;" />
+      <fx:include fx:id="targetEntity" source="entity-readout.fxml" />
+   </children>
+</VBox>

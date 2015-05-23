@@ -1,14 +1,15 @@
 package controller
 
-import javafx.fxml.FXML
+import javafx.fxml.{FXMLLoader, FXML}
+import javafx.scene.Parent
 import javafx.scene.control.Label
 import javafx.scene.layout.Pane
 
+import component.EntityController
 import me.mtrupkin.console._
 import me.mtrupkin.control.ConsoleFx
 import me.mtrupkin.core.{Point, Size}
-import model.UniverseTracker
-import model.space.Universe
+import model.{EntityControl, UniverseTracker, Universe}
 
 import scala.util.{Failure, Success, Try}
 import scalafx.Includes._
@@ -17,132 +18,48 @@ import scalafx.scene.{control => sfxc, input => sfxi, layout => sfxl, shape => s
 /**
  * Created by mtrupkin on 12/15/2014.
  */
-trait Game { self: FlagshipController =>
+trait Game { self: MainController =>
   class GameController(val world: Universe with UniverseTracker) extends ControllerState {
-    val name = "Game"
+    val name = "main-game"
 
-    @FXML var label1: Label = _
-    @FXML var label2: Label = _
-    @FXML var targetNameText: Label = _
-    @FXML var targetActionText: Label = _
-    @FXML var targetDescriptionText: Label = _
-    @FXML var targetPositionText: Label = _
-    @FXML var consolePane: Pane = _
-    @FXML var consolePane2: Pane = _
+    override def root: Parent = {
+      val is = getClass.getResourceAsStream(templateName)
+      val loader = new FXMLLoader()
+      loader.setLocation(getClass.getResource(templateName))
+      loader.setController(this)
+      loader.load[Parent](is)
+    }
+
     @FXML var rootPane: Pane = _
-
-    var console: ConsoleFx = _
-    var console2: ConsoleFx = _
-    var screen: Screen = _
-    var screen2: Screen = _
+    @FXML var entity1: Pane = _
+    @FXML var entity1Controller: EntityController = _
+    @FXML var entity2: Pane = _
+    @FXML var entity2Controller: EntityController = _
 
     def initialize(): Unit = {
-      val consoleSize = Size(40, 20)
-      console = new ConsoleFx(consoleSize, fontSize = 24)
-      console.setStyle("-fx-border-color: white")
-
-      console2 = new ConsoleFx(consoleSize, fontSize = 24)
-      console2.setStyle("-fx-border-color: white")
-
       new sfxl.Pane(rootPane) {
         filterEvent(sfxi.KeyEvent.Any) {
           (event: sfxi.KeyEvent) => handleKeyPressed(event)
         }
       }
 
-      new sfxl.Pane(console) {
-        onMouseClicked = (e: sfxi.MouseEvent) => handleMouseClicked(e)
-        onMouseMoved = (e: sfxi.MouseEvent) => handleMouseMove(e)
-        onMouseExited = (e: sfxi.MouseEvent) => handleMouseExit(e)
-      }
+      entity1Controller.setEntity(world.entitySystem1)
+      entity2Controller.setEntity(world.entitySystem2)
 
-      new sfxl.Pane(console2) {
-        onMouseClicked = (e: sfxi.MouseEvent) => handleMouseClicked2(e)
-        onMouseMoved = (e: sfxi.MouseEvent) => handleMouseMove2(e)
-        onMouseExited = (e: sfxi.MouseEvent) => handleMouseExit2(e)
-      }
-
-      screen = Screen(consoleSize)
-      screen2 = Screen(consoleSize)
-      consolePane.getChildren.clear()
-      consolePane.getChildren.add(console)
-      consolePane.setFocusTraversable(true)
-
-      consolePane2.getChildren.clear()
-      consolePane2.getChildren.add(console2)
-      consolePane2.setFocusTraversable(true)
+      entity1Controller.entityProperty.onChange({
+        entity2Controller.setEntity(EntityControl(entity1Controller.entityProperty.value))
+      })
 
       timer.start()
     }
 
     override def update(elapsed: Int): Unit = {
       // TODO: update and render at different rates
-
       world.update(elapsed)
-      world.render(screen)
-      world.render2(screen2)
 
-      console.draw(screen)
-      console2.draw(screen2)
+      entity1Controller.update(elapsed)
+      entity2Controller.update(elapsed)
     }
-
-    implicit def itos(int: Int): String = int.toString
-
-    implicit def pointToString(p: Point): String = {
-      s"[${p.x}, ${p.y}]"
-    }
-
-    def handleMouseClicked(mouseEvent: sfxi.MouseEvent): Unit = {
-      for( s <- mouseToPoint(mouseEvent)) {
-        world.selectTarget1(screen, screen2, s)
-      }
-    }
-
-    def handleMouseClicked2(mouseEvent: sfxi.MouseEvent): Unit = {
-      for( s <- mouseToPoint(mouseEvent)) {
-        world.selectTarget2(s)
-      }
-    }
-
-    def updateMouseInfo(w: Point): Unit = {
-      targetPositionText.setText(s"${w.x}:${w.y}")
-    }
-
-    def updateActionText(name: String, description: String): Unit = {
-      targetActionText.setText(name)
-      targetDescriptionText.setText(description)
-    }
-
-    def handleMouseMove(mouseEvent: sfxi.MouseEvent): Unit = {
-      for( s <- mouseToPoint(mouseEvent)) {
-        world.target1 = s
-        world.highlightTarget1(s)
-        updateMouseInfo(s)
-      }
-    }
-
-    def handleMouseExit(mouseEvent: sfxi.MouseEvent): Unit = {
-      targetNameText.setText("")
-      targetActionText.setText("")
-      targetDescriptionText.setText("")
-      targetPositionText.setText("")
-    }
-
-    def handleMouseMove2(mouseEvent: sfxi.MouseEvent): Unit = {
-      for( s <- mouseToPoint(mouseEvent)) {
-        world.target2 = s
-        updateMouseInfo(s)
-      }
-    }
-
-    def handleMouseExit2(mouseEvent: sfxi.MouseEvent): Unit = {
-      targetNameText.setText("")
-      targetActionText.setText("")
-      targetDescriptionText.setText("")
-      targetPositionText.setText("")
-    }
-
-    def mouseToPoint(mouseEvent: sfxi.MouseEvent): Option[Point] = console.toScreen(mouseEvent.x, mouseEvent.y)
 
     def handleKeyPressed(event: sfxi.KeyEvent): Unit = {
       import me.mtrupkin.console.Key._

@@ -1,6 +1,4 @@
-package model.space
-
-import me.mtrupkin.core.Size
+package model
 
 
 

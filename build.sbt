@@ -1,6 +1,8 @@
 name := """flagship"""
 
-version := "1.0"
+version := "1.0-SNAPSHOT"
+
+organization := "me.mtrupkin"
 
 scalaVersion := "2.11.6"
 

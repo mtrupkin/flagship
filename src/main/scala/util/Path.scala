@@ -1,8 +1,8 @@
 package util
 
+import core.GameMap
 import me.mtrupkin.core.Point
 import me.mtrupkin.path.Line
-import model.GameMap
 
 import scala.collection.immutable.List
 
