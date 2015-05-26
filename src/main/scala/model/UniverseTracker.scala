@@ -1,9 +1,6 @@
 package model
 
-import me.mtrupkin.console.{Colors, ScreenChar, Screen}
-import me.mtrupkin.core.{Points, Point}
-import model._
-import util.{Path, AStar}
+import me.mtrupkin.core.{Point, Points}
 
 
 /**
@@ -16,7 +13,7 @@ trait UniverseTracker {
   var target2: Point = Points.Origin
 
   val initialSector = new SectorBuilder().apply()
-  val initialStarSystem = sector.entities(0)
+  val initialStarSystem = sectors(0).entities(0)
 
   var entity1: Entity = initialSector
   var entity2: Entity = initialStarSystem

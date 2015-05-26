@@ -1,7 +1,7 @@
 package model
 
-import me.mtrupkin.console.{Colors, RGB, ScreenChar, Screen}
-import me.mtrupkin.core.{Size, Point}
+import me.mtrupkin.console.{Colors, RGB, Screen, ScreenChar}
+import me.mtrupkin.core.{Point, Size}
 
 /**
  * Created by mtrupkin on 5/22/2015.
@@ -17,7 +17,6 @@ trait EntityControl {
 
 object EntityControl {
   def apply(entity: Entity): EntityControl = entity match {
-//    case sector: Sector => new StarSystemControl(starSystem)
     case starSystem: StarSystem => new StarSystemControl(starSystem)
     case es: EntitySystem => new EntitySystemControl {
       val entity = es
@@ -37,30 +36,17 @@ object EntityControl {
         val p = Point(r.x + rx, r.y + ry)
         p
       }
-      def render(screen: Screen): Unit = screen(toScreen(entity.position)) = draw(entity)
-      def target(p: Point): Option[Entity] =  if (toScreen(entity.position) == p) Some(entity) else None
+      def render(screen: Screen): Unit = screen(toScreen(core.Vector(0, 0))) = draw(entity)
+      def target(p: Point): Option[Entity] =  if (toScreen(core.Vector(0, 0)) == p) Some(entity) else None
     }
   }
 
   def draw(entity: Entity): ScreenChar = entity match {
-    case starSystem: StarSystem => ScreenChar('*', starColor(starSystem.star.starClass))
-    case star: Star => ScreenChar('*', starColor(star.starClass))
+    case starSystem: StarSystem => ScreenChar('*', StarClass.color(starSystem.star.spectralType))
+    case star: Star => ScreenChar('*', StarClass.color(star.spectralType))
     case _: Planet => 'O'
     case _ => ' '
   }
-
-  def starColor(starClass: Char): RGB = {
-    starClass match {
-      case 'O' => Colors.White
-      case 'B' => Colors.Yellow
-      case 'A' => Colors.Red
-      case 'F' => Colors.Green
-      case 'G' => Colors.LightBlue
-      case 'K' => RGB(255, 0, 255)
-      case 'M' => Colors.Blue
-    }
-  }
-
 }
 
 trait EntitySystemControl extends EntityControl {
@@ -68,7 +54,6 @@ trait EntitySystemControl extends EntityControl {
     case es: EntitySystem => es.entities
     case _ => ???
   }
-
 
   def render(screen: Screen): Unit = {
     for {
@@ -94,14 +79,19 @@ class StarSystemControl(val starSystem: StarSystem) extends EntitySystemControl 
     val p = Point(r.x + rx, r.y + ry)
     p
   }
+}
 
-//  def target(p: Point): Option[Entity] = entities.find(e => toConsole(e.position) == p)
 
-//  def render(screen: Screen): Unit = {
-//    for {
-//      entity <- entities
-//      position = entity.position
-//    } screen(toConsole(position)) = EntityControl.draw(entity)
-//  }
-
+object StarClass {
+  def color(starClass: Char): RGB = {
+    starClass match {
+      case 'O' => Colors.White
+      case 'B' => Colors.Yellow
+      case 'A' => Colors.Red
+      case 'F' => Colors.Green
+      case 'G' => Colors.LightBlue
+      case 'K' => RGB(255, 0, 255)
+      case 'M' => Colors.Blue
+    }
+  }
 }

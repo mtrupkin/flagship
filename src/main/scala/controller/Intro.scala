@@ -44,7 +44,8 @@ trait Intro { self: MainController =>
 
     def continueGame() = {
       val sectorBuilder = new SectorBuilder()
-      val universe = new Universe(sectorBuilder.apply()) with UniverseTracker
+      val sector = sectorBuilder.apply()
+      val universe = new Universe(Seq(sector)) with UniverseTracker
       changeState(new GameController(universe))
     }
 
