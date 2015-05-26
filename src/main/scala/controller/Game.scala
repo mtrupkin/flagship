@@ -38,16 +38,26 @@ trait Game { self: MainController =>
 
     def initialize(): Unit = {
       new sfxl.Pane(rootPane) {
-        filterEvent(sfxi.KeyEvent.Any) {
+        filterEvent(sfxi.KeyEvent.KeyReleased) {
           (event: sfxi.KeyEvent) => handleKeyPressed(event)
         }
       }
 
-      entity1Controller.setEntity(world.entitySystem1)
-      entity2Controller.setEntity(world.entitySystem2)
+      entity1Controller.setEntity(world.entity1)
+      entity2Controller.setEntity(world.entity2)
 
-      entity1Controller.entityProperty.onChange({
-        entity2Controller.setEntity(EntityControl(entity1Controller.entityProperty.value))
+      entity1Controller.entityHighlighted.onChange({
+        entity2Controller.setEntity(entity1Controller.entityHighlighted.value)
+      })
+
+      entity1Controller.entitySelected.onChange({
+        entity1Controller.setEntity(entity1Controller.entitySelected.value)
+      })
+
+      entity2Controller.entitySelected.onChange({
+        val entity = entity2Controller.entitySelected.value
+        entity2Controller.setEntity(entity)
+        entity1Controller.setEntity(entity.parent)
       })
 
       timer.start()
@@ -71,7 +81,10 @@ trait Game { self: MainController =>
         case ConsoleKey(X, Modifiers.Control) => exit()
         case ConsoleKey(k, _) => k match {
           case Space =>
-          case Esc => changeState(new IntroController)
+          case Esc => {
+            entity2Controller.setEntity(entity1Controller.entityControl.entity)
+            entity1Controller.setEntity(entity1Controller.entityControl.entity.parent)
+          }
           case A =>
           case _ =>
         }

@@ -1,64 +1,94 @@
 package model
 
-import me.mtrupkin.console.{ScreenChar, Screen}
+import me.mtrupkin.console.{Colors, RGB, ScreenChar, Screen}
 import me.mtrupkin.core.{Size, Point}
-import model.DiscreteSystem
 
 /**
  * Created by mtrupkin on 5/22/2015.
  */
 
 trait EntityControl {
+  def entity: Entity
   def render(screen: Screen): Unit
   def target(p: Point): Option[Entity]
+  implicit def toInt(d: Double): Int = Math.floor(d).toInt
+  def toScreen(v: core.Vector): Point = v
 }
 
 object EntityControl {
   def apply(entity: Entity): EntityControl = entity match {
-    case e: DiscreteSystem => new DiscreteSystemControl(e)
-    case e: BodySystem => new BodySystemControl(e)
-    case _ => new EntityControl {
-      def render(screen: Screen): Unit = {}
-      def target(p: Point): Option[Entity] = None
+//    case sector: Sector => new StarSystemControl(starSystem)
+    case starSystem: StarSystem => new StarSystemControl(starSystem)
+    case es: EntitySystem => new EntitySystemControl {
+      val entity = es
+    }
+
+    case e => new EntityControl {
+      val entity = e
+      val consoleSize: Size = Size(40, 20)
+
+      override def toScreen(v: core.Vector): Point = {
+        val rx = consoleSize.width / 2
+        val ry = consoleSize.height / 2
+
+        val r = core.Vector(v.x*rx, v.y*ry) / 100
+
+        implicit def toInt(d: Double): Int = Math.floor(d).toInt
+        val p = Point(r.x + rx, r.y + ry)
+        p
+      }
+      def render(screen: Screen): Unit = screen(toScreen(entity.position)) = draw(entity)
+      def target(p: Point): Option[Entity] =  if (toScreen(entity.position) == p) Some(entity) else None
     }
   }
 
-
   def draw(entity: Entity): ScreenChar = entity match {
-    case _: StarSystem => '*'
-    case _: Star => '*'
+    case starSystem: StarSystem => ScreenChar('*', starColor(starSystem.star.starClass))
+    case star: Star => ScreenChar('*', starColor(star.starClass))
     case _: Planet => 'O'
     case _ => ' '
   }
+
+  def starColor(starClass: Char): RGB = {
+    starClass match {
+      case 'O' => Colors.White
+      case 'B' => Colors.Yellow
+      case 'A' => Colors.Red
+      case 'F' => Colors.Green
+      case 'G' => Colors.LightBlue
+      case 'K' => RGB(255, 0, 255)
+      case 'M' => Colors.Blue
+    }
+  }
+
 }
 
 trait EntitySystemControl extends EntityControl {
-  def entitySystem: EntitySystem
+  def entities: Seq[Entity] = entity match {
+    case es: EntitySystem => es.entities
+    case _ => ???
+  }
 
-  def entities: Seq[Entity] = entitySystem.entities
 
   def render(screen: Screen): Unit = {
     for {
       entity <- entities
       position = entity.position
-    } screen(position) = EntityControl.draw(entity)
+    } screen(toScreen(position)) = EntityControl.draw(entity)
   }
 
-  def target(p: Point): Option[Entity] = entities.find( _.position == p)
+  def target(p: Point): Option[Entity] = entities.find( e => toScreen(e.position) == p)
 }
 
-class DiscreteSystemControl(val entitySystem: DiscreteSystem) extends EntitySystemControl {
-
-}
-
-class BodySystemControl(val entitySystem: BodySystem) extends EntitySystemControl {
+class StarSystemControl(val starSystem: StarSystem) extends EntitySystemControl {
+  val entity = starSystem
   val consoleSize: Size = Size(40, 20)
 
-  def toConsole(v: core.Vector): Point = {
+  override def toScreen(v: core.Vector): Point = {
     val rx = consoleSize.width / 2
     val ry = consoleSize.height / 2
 
-    val r = core.Vector(v.x*rx, v.y*ry) / entitySystem.radius
+    val r = core.Vector(v.x*rx, v.y*ry) / 100
 
     implicit def toInt(d: Double): Int = Math.floor(d).toInt
     val p = Point(r.x + rx, r.y + ry)

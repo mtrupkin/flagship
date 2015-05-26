@@ -15,11 +15,17 @@ class EntityReadoutController {
   @FXML var id: Label = _
   @FXML var name: Label = _
 
+  implicit def toString(v: core.Vector): String = {
+
+    f"[${v.x}%.2f : ${v.y}%.2f]"
+  }
+
   def update(entity: Entity): Unit = {
+
     val p = entity.position
 
-    position.setText(s"[${p.x}:${p.y}]")
-    typeName.setText(entity.typeName)
+    position.setText(p)
+    typeName.setText(Entity.typeName(entity))
     id.setText(entity.id)
     name.setText(entity.name)
   }

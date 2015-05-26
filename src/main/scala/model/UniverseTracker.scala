@@ -15,30 +15,9 @@ trait UniverseTracker {
   var target1: Point = Points.Origin
   var target2: Point = Points.Origin
 
-  var entitySystem1: EntityControl = new DiscreteSystemControl(sector)
-  var entitySystem2: EntityControl = new BodySystemControl(StarSystem())
+  val initialSector = new SectorBuilder().apply()
+  val initialStarSystem = sector.entities(0)
 
-
-  def highlightTarget1(p: Point): Unit = {
-    entitySystem1.target(p) match {
-      case Some(view) => {
-//        view2 = view
-      }
-      case _ =>
-    }
-  }
-  def selectTarget1(screen1: Screen, screen2: Screen, p: Point): Unit = {
-//    view1.selectView(screen1.size, p) match {
-//      case Some(view) => {
-//        screen1.clear()
-//        screen2.clear()
-//        view1 = view
-////        view2 = view
-//      }
-//      case _ =>
-//    }
-  }
-
-  def selectTarget2(p: Point): Unit = {
-  }
+  var entity1: Entity = initialSector
+  var entity2: Entity = initialStarSystem
 }

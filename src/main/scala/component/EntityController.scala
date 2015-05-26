@@ -19,10 +19,11 @@ import scalafx.scene.{control => sfxc, input => sfxi, layout => sfxl, shape => s
 class EntityController {
 //  @FXML var header: Label = _
   @FXML var consoleParent: Pane = _
-  @FXML var targetEntity: Pane = _
-  @FXML var targetEntityController: EntityReadoutController = _
+  @FXML var targetReadout: Pane = _
+  @FXML var targetReadoutController: EntityReadoutController = _
 
-  val entityProperty = new ObjectProperty[Entity]
+  val entityHighlighted = new ObjectProperty[Entity]
+  val entitySelected = new ObjectProperty[Entity]
 
   var console: ConsoleFx = _
   var screen: Screen = _
@@ -42,10 +43,9 @@ class EntityController {
     consoleParent.setFocusTraversable(true)
   }
 
-  def setEntity(entity: EntityControl) {
-    this.entityControl = entity
-
-//    header.setText(system.entitySystem.name)
+  def setEntity(entity: Entity) {
+    screen.clear()
+    this.entityControl = EntityControl(entity)
   }
 
   def update(elapsed: Int): Unit = {
@@ -60,8 +60,11 @@ class EntityController {
   }
 
   def handleMouseClicked(mouseEvent: sfxi.MouseEvent): Unit = {
-    for( s <- mouseToPoint(mouseEvent)) {
-      updateMouseInfo(s)
+    for {
+      s <- mouseToPoint(mouseEvent)
+      target <- entityControl.target(s)
+    } {
+      entitySelected.update(target)
     }
   }
 
@@ -72,8 +75,8 @@ class EntityController {
     for {
       target <- entityControl.target(w)
     } {
-      targetEntityController.update(target)
-      entityProperty.update(target)
+      targetReadoutController.update(target)
+      entityHighlighted.update(target)
     }
   }
 
