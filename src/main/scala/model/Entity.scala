@@ -11,10 +11,12 @@ trait Entity {
   def position: Vector
 
   var parent: Entity = _
+  def update(elapsed: Int) = {}
 }
 
 trait EntitySystem extends Entity {
-  def entities: Seq[Entity]
+  def children: Seq[Entity]
+  override def update(elapsed: Int) = children.foreach { _.update(elapsed) }
 }
 
 object Entity {

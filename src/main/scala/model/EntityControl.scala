@@ -51,7 +51,7 @@ object EntityControl {
 
 trait EntitySystemControl extends EntityControl {
   def entities: Seq[Entity] = entity match {
-    case es: EntitySystem => es.entities
+    case es: EntitySystem => es.children
     case _ => ???
   }
 

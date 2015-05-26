@@ -13,7 +13,7 @@ trait UniverseTracker {
   var target2: Point = Points.Origin
 
   val initialSector = new SectorBuilder().apply()
-  val initialStarSystem = sectors(0).entities(0)
+  val initialStarSystem = sectors(0).children(0)
 
   var entity1: Entity = initialSector
   var entity2: Entity = initialStarSystem
