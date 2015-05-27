@@ -9,7 +9,8 @@ import component.EntityController
 import me.mtrupkin.console._
 import me.mtrupkin.control.ConsoleFx
 import me.mtrupkin.core.{Point, Size}
-import model.{EntityControl, UniverseTracker, Universe}
+import model.space.Universe
+import model.{SectorViewer, EntityViewer}
 
 import scala.util.{Failure, Success, Try}
 import scalafx.Includes._
@@ -19,7 +20,7 @@ import scalafx.scene.{control => sfxc, input => sfxi, layout => sfxl, shape => s
  * Created by mtrupkin on 12/15/2014.
  */
 trait Game { self: MainController =>
-  class GameController(val world: Universe with UniverseTracker) extends ControllerState {
+  class GameController(val world: Universe) extends ControllerState {
     val name = "main-game"
 
     override def root: Parent = {
@@ -43,21 +44,26 @@ trait Game { self: MainController =>
         }
       }
 
-      entity1Controller.setEntity(world.entity1)
-      entity2Controller.setEntity(world.entity2)
+      val entityViewer1: EntityViewer = new SectorViewer(world.sectors(0))
+      val entityViewer2: EntityViewer = EntityViewer(entityViewer1, world.sectors(0).starSystems(0))
+
+      entity1Controller.setEntityViewer(entityViewer1)
+      entity2Controller.setEntityViewer(entityViewer2)
 
       entity1Controller.entityHighlighted.onChange({
-        entity2Controller.setEntity(entity1Controller.entityHighlighted.value)
+        val entityViewer = EntityViewer(entity1Controller.entityViewer, entity1Controller.entityHighlighted.value)
+        entity2Controller.setEntityViewer(entityViewer)
       })
 
       entity1Controller.entitySelected.onChange({
-        entity1Controller.setEntity(entity1Controller.entitySelected.value)
+        val entityViewer = EntityViewer(entity1Controller.entityViewer, entity1Controller.entityHighlighted.value)
+        entity1Controller.setEntityViewer(entityViewer)
       })
 
       entity2Controller.entitySelected.onChange({
-        val entity = entity2Controller.entitySelected.value
-        entity2Controller.setEntity(entity)
-        entity1Controller.setEntity(entity.parent)
+        val entityViewer = EntityViewer(entity2Controller.entityViewer, entity2Controller.entitySelected.value)
+        entity1Controller.setEntityViewer(entityViewer.parent)
+        entity2Controller.setEntityViewer(entityViewer)
       })
 
       timer.start()
@@ -82,8 +88,10 @@ trait Game { self: MainController =>
         case ConsoleKey(k, _) => k match {
           case Space =>
           case Esc => {
-            entity2Controller.setEntity(entity1Controller.entityControl.entity)
-            entity1Controller.setEntity(entity1Controller.entityControl.entity.parent)
+            entity2Controller.setEntityViewer(entity1Controller.entityViewer)
+
+            entity1Controller.setEntityViewer(entity1Controller.entityViewer.parent)
+
           }
           case A =>
           case _ =>

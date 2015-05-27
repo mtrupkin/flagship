@@ -1,13 +1,13 @@
 package component
 
 import javafx.fxml.FXML
-import javafx.scene.control.Label
 import javafx.scene.layout.Pane
 
 import me.mtrupkin.console.Screen
 import me.mtrupkin.control.ConsoleFx
 import me.mtrupkin.core.{Size, Point}
-import model.{Entity, EntityControl, EntitySystem}
+import model.EntityViewer
+import model.space.Entity
 
 import scalafx.Includes._
 import scalafx.beans.property.{ObjectProperty, Property}
@@ -27,7 +27,7 @@ class EntityController {
 
   var console: ConsoleFx = _
   var screen: Screen = _
-  var entityControl: EntityControl = _
+  var entityViewer: EntityViewer = _
 
   def initialize(): Unit = {
     val consoleSize = Size(40, 20)
@@ -43,13 +43,13 @@ class EntityController {
     consoleParent.setFocusTraversable(true)
   }
 
-  def setEntity(entity: Entity) {
+  def setEntityViewer(entityViewer: EntityViewer) {
     screen.clear()
-    this.entityControl = EntityControl(entity)
+    this.entityViewer = entityViewer
   }
 
   def update(elapsed: Int): Unit = {
-    entityControl.render(screen)
+    entityViewer.render(screen)
     console.draw(screen)
   }
 
@@ -62,7 +62,7 @@ class EntityController {
   def handleMouseClicked(mouseEvent: sfxi.MouseEvent): Unit = {
     for {
       s <- mouseToPoint(mouseEvent)
-      target <- entityControl.target(s)
+      target <- entityViewer.target(s)
     } {
       entitySelected.update(target)
     }
@@ -72,10 +72,13 @@ class EntityController {
   }
 
   def updateMouseInfo(w: Point): Unit = {
+    targetReadoutController.updateCursor(w)
+
     for {
-      target <- entityControl.target(w)
+      target <- entityViewer.target(w)
     } {
       targetReadoutController.update(target)
+
       entityHighlighted.update(target)
     }
   }

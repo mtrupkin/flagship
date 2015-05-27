@@ -1,4 +1,4 @@
-package model
+package model.space
 
 /**
  * Created by mtrupkin on 5/23/2015.

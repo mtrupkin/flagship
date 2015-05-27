@@ -1,11 +1,8 @@
-package model
-
-
+package model.space
 
 /**
  * Created by mtrupkin on 12/19/2014.
  */
-
 class Universe(val sectors: Seq[Sector]) {
   var time: Long = 0
 
@@ -15,8 +12,7 @@ class Universe(val sectors: Seq[Sector]) {
   }
 }
 
-class Sector(val id: String, val name: String, val position: core.Vector, val children: Seq[StarSystem]) extends EntitySystem {
-}
+class Sector(val id: String, val name: String, val position: core.Vector, val starSystems: Seq[StarSystem]) extends Entity
 
 object Sector  {
   val typeName = "Sector"

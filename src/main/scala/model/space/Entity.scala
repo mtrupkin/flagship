@@ -1,22 +1,17 @@
-package model
+package model.space
 
 import core.Vector
 
 /**
  * Created by mtrupkin on 5/4/2015.
  */
+
 trait Entity {
   def name: String
   def id: String
   def position: Vector
 
-  var parent: Entity = _
-  def update(elapsed: Int) = {}
-}
-
-trait EntitySystem extends Entity {
-  def children: Seq[Entity]
-  override def update(elapsed: Int) = children.foreach { _.update(elapsed) }
+  def update(elapsed: Int): Unit = {}
 }
 
 object Entity {
