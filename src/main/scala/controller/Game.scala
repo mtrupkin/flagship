@@ -89,9 +89,7 @@ trait Game { self: MainController =>
           case Space =>
           case Esc => {
             entity2Controller.setEntityViewer(entity1Controller.entityViewer)
-
             entity1Controller.setEntityViewer(entity1Controller.entityViewer.parent)
-
           }
           case A =>
           case _ =>

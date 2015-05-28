@@ -49,6 +49,7 @@ class EntityController {
   }
 
   def update(elapsed: Int): Unit = {
+    screen.clear()
     entityViewer.render(screen)
     console.draw(screen)
   }

@@ -19,10 +19,7 @@ import scalafx.scene.{control => sfxc, input => sfxi, layout => sfxl}
 /**
  * Created by mtrupkin on 12/15/2014.
  */
-
-
 trait Intro { self: MainController =>
-
   class IntroController extends ControllerState {
     val name = "intro"
 

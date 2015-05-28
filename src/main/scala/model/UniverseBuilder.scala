@@ -8,6 +8,7 @@ import scala.util.Random
 /**
  * Created by mtrupkin on 5/26/2015.
  */
+import Entity._
 
 class EntityBuilder(val typeID: String) {
   private var count = 0
@@ -32,7 +33,7 @@ class EntityBuilder(val typeID: String) {
   def rndVector(): core.Vector = core.Vector(Random.nextDouble()*100-50, Random.nextDouble()*100-50)
 }
 
-class SectorBuilder extends EntityBuilder(Sector.typeID) {
+class SectorBuilder extends EntityBuilder(SectorID) {
   def apply(): Sector = {
     val starSystemBuilder = new StarSystemBuilder
     val starSystemCount = 30 + Random.nextInt(20)
@@ -43,7 +44,7 @@ class SectorBuilder extends EntityBuilder(Sector.typeID) {
   }
 }
 
-class StarSystemBuilder extends EntityBuilder(StarSystem.typeID) {
+class StarSystemBuilder extends EntityBuilder(StarSystemID) {
   def apply(): StarSystem = {
     val id = nextID()
 
@@ -51,7 +52,7 @@ class StarSystemBuilder extends EntityBuilder(StarSystem.typeID) {
     val starBuilder = new StarBuilder(currentID())
     val star = starBuilder.apply()
 
-    val planetCount = 2 + Random.nextInt(5)
+    val planetCount = 2 + Random.nextInt(2)
     val planets = for (i <- 0 to planetCount) yield planetBuilder.apply()
 
     val starSystem = new StarSystem(id, rndName(), rndPosition(), star, planets)
@@ -59,13 +60,26 @@ class StarSystemBuilder extends EntityBuilder(StarSystem.typeID) {
   }
 }
 
-class StarBuilder(val id: Int) extends EntityBuilder(Star.typeID) {
+class StarBuilder(val id: Int) extends EntityBuilder(StarID) {
+  def rndStarClass(): Char = {
+    val rnd = Random.nextInt(7)
+    rnd match {
+      case 0 => 'O'
+      case 1 => 'B'
+      case 2 => 'A'
+      case 3 => 'F'
+      case 4 => 'G'
+      case 5 => 'K'
+      case 6 => 'M'
+    }
+  }
+
   def apply(): Star = {
-    new Star(s"$typeID-$id", rndName(), core.Vector(0, 0), StarClass.rndStarClass())
+    new Star(s"$typeID-$id", rndName(), core.Vector(0, 0), rndStarClass())
   }
 }
 
-class PlanetBuilder extends EntityBuilder(Planet.typeID) {
+class PlanetBuilder extends EntityBuilder(PlanetID) {
   def apply(): Planet = {
     new Planet(nextID(), rndName(), rndVector())
   }

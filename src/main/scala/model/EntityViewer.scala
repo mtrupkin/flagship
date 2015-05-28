@@ -14,6 +14,17 @@ trait EntityViewer {
 }
 
 object EntityViewer {
+  def starColor(starClass: Char): RGB = {
+    starClass match {
+      case 'O' => Colors.White
+      case 'B' => Colors.Yellow
+      case 'A' => Colors.Red
+      case 'F' => Colors.Green
+      case 'G' => Colors.LightBlue
+      case 'K' => RGB(255, 0, 255)
+      case 'M' => Colors.Blue
+    }
+  }
   def apply(currentViewer: EntityViewer, entity: Entity): EntityViewer = entity match {
     case sector: Sector => new EntityViewer {
       def parent: EntityViewer = this
@@ -43,8 +54,8 @@ object EntityViewer {
   }
 
   def draw(entity: Entity): ScreenChar = entity match {
-    case starSystem: StarSystem => ScreenChar('*', StarClass.color(starSystem.star.spectralType))
-    case star: Star => ScreenChar('*', StarClass.color(star.spectralType))
+    case starSystem: StarSystem => ScreenChar('*', starColor(starSystem.star.spectralType))
+    case star: Star => ScreenChar('*', starColor(star.spectralType))
     case _: Planet => 'O'
     case _ => ' '
   }
