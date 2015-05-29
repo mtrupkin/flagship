@@ -27,6 +27,7 @@ class EntityController {
 
   var console: ConsoleFx = _
   var screen: Screen = _
+  var entity: Entity = _
   var entityViewer: EntityViewer = _
 
   def initialize(): Unit = {
@@ -43,13 +44,10 @@ class EntityController {
     consoleParent.setFocusTraversable(true)
   }
 
-  def setEntityViewer(entityViewer: EntityViewer) {
+  def setEntity(entity: Entity) {
     screen.clear()
-    this.entityViewer = entityViewer
-  }
-
-  def update(elapsed: Int): Unit = {
-    screen.clear()
+    this.entity = entity
+    this.entityViewer = EntityViewer(entity)
     entityViewer.render(screen)
     console.draw(screen)
   }

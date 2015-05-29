@@ -9,7 +9,7 @@ import component.EntityController
 import me.mtrupkin.console._
 import me.mtrupkin.control.ConsoleFx
 import me.mtrupkin.core.{Point, Size}
-import model.space.Universe
+import model.space.{Entity, Universe}
 import model.{SectorViewer, EntityViewer}
 
 import scala.util.{Failure, Success, Try}
@@ -20,7 +20,7 @@ import scalafx.scene.{control => sfxc, input => sfxi, layout => sfxl, shape => s
  * Created by mtrupkin on 12/15/2014.
  */
 trait Game { self: MainController =>
-  class GameController(val world: Universe) extends ControllerState {
+  class GameController(var world: Universe) extends ControllerState {
     val name = "main-game"
 
     override def root: Parent = {
@@ -37,6 +37,9 @@ trait Game { self: MainController =>
     @FXML var entity2: Pane = _
     @FXML var entity2Controller: EntityController = _
 
+    var entityID1: String = _
+    var entityID2: String = _
+
     def initialize(): Unit = {
       new sfxl.Pane(rootPane) {
         filterEvent(sfxi.KeyEvent.KeyReleased) {
@@ -44,26 +47,29 @@ trait Game { self: MainController =>
         }
       }
 
-      val entityViewer1: EntityViewer = new SectorViewer(world.sectors(0))
-      val entityViewer2: EntityViewer = EntityViewer(entityViewer1, world.sectors(0).starSystems(0))
 
-      entity1Controller.setEntityViewer(entityViewer1)
-      entity2Controller.setEntityViewer(entityViewer2)
+      entityID1 = world.sectors(0).id
+      entityID2 = world.sectors(0).starSystems(0).id
+
 
       entity1Controller.entityHighlighted.onChange({
-        val entityViewer = EntityViewer(entity1Controller.entityViewer, entity1Controller.entityHighlighted.value)
-        entity2Controller.setEntityViewer(entityViewer)
+        entityID2 = entity1Controller.entityHighlighted.value.id
       })
 
       entity1Controller.entitySelected.onChange({
-        val entityViewer = EntityViewer(entity1Controller.entityViewer, entity1Controller.entityHighlighted.value)
-        entity1Controller.setEntityViewer(entityViewer)
+        val id = entity1Controller.entitySelected.value.id
+        if (!world.locate(id).children.isEmpty) {
+          entityID1 = id
+        }
+
       })
 
       entity2Controller.entitySelected.onChange({
-        val entityViewer = EntityViewer(entity2Controller.entityViewer, entity2Controller.entitySelected.value)
-        entity1Controller.setEntityViewer(entityViewer.parent)
-        entity2Controller.setEntityViewer(entityViewer)
+        val entityID = entity2Controller.entitySelected.value.id
+        val parentID = world.locate(entityID).parent
+
+        entity1Controller.setEntity(world.locate(parentID))
+        entity2Controller.setEntity(world.locate(entityID))
       })
 
       timer.start()
@@ -71,10 +77,10 @@ trait Game { self: MainController =>
 
     override def update(elapsed: Int): Unit = {
       // TODO: update and render at different rates
-      world.update(elapsed)
+      world = world.update(elapsed)
 
-      entity1Controller.update(elapsed)
-      entity2Controller.update(elapsed)
+      entity1Controller.setEntity(world.locate(entityID1))
+      entity2Controller.setEntity(world.locate(entityID2))
     }
 
     def handleKeyPressed(event: sfxi.KeyEvent): Unit = {
@@ -88,8 +94,10 @@ trait Game { self: MainController =>
         case ConsoleKey(k, _) => k match {
           case Space =>
           case Esc => {
-            entity2Controller.setEntityViewer(entity1Controller.entityViewer)
-            entity1Controller.setEntityViewer(entity1Controller.entityViewer.parent)
+            if (world.locate(entityID1).parent != Entity.RootID) {
+              entityID2 = entityID1
+              entityID1 = world.locate(entityID1).parent
+            }
           }
           case A =>
           case _ =>

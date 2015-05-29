@@ -8,34 +8,19 @@ import model.space._
  * Created by mtrupkin on 5/22/2015.
  */
 trait EntityViewer {
-  def parent: EntityViewer
   def render(screen: Screen): Unit
   def target(p: Point): Option[Entity]
 }
 
 object EntityViewer {
-  def starColor(starClass: Char): RGB = {
-    starClass match {
-      case 'O' => Colors.White
-      case 'B' => Colors.Yellow
-      case 'A' => Colors.Red
-      case 'F' => Colors.Green
-      case 'G' => Colors.LightBlue
-      case 'K' => RGB(255, 0, 255)
-      case 'M' => Colors.Blue
+  def apply(entity: Entity): EntityViewer = entity match {
+    case sector: Sector => new EntitySystemViewer {
+      def entities: Seq[Entity] = sector.children
     }
-  }
-  def apply(currentViewer: EntityViewer, entity: Entity): EntityViewer = entity match {
-    case sector: Sector => new EntityViewer {
-      def parent: EntityViewer = this
-      override def target(p: Point): Option[Entity] = ???
 
-      override def render(screen: Screen): Unit = ???
-    }
-    case starSystem: StarSystem => new StarSystemViewer(currentViewer, starSystem)
-    case planet: Planet => new PlanetViewer(currentViewer, planet)
+    case starSystem: StarSystem => new StarSystemViewer(starSystem)
+    case planet: Planet => new PlanetViewer(planet)
     case e => new EntityViewer {
-      val parent = currentViewer
       val consoleSize: Size = Size(40, 20)
 
        def toScreen(v: core.Vector): Point = {
@@ -59,11 +44,23 @@ object EntityViewer {
     case _: Planet => 'O'
     case _ => ' '
   }
+
+  def starColor(starClass: Char): RGB = {
+    starClass match {
+      case 'O' => Colors.White
+      case 'B' => Colors.Yellow
+      case 'A' => Colors.Red
+      case 'F' => Colors.Green
+      case 'G' => Colors.LightBlue
+      case 'K' => RGB(255, 0, 255)
+      case 'M' => Colors.Blue
+    }
+  }
 }
 
 trait EntitySystemViewer extends EntityViewer {
   def entities: Seq[Entity]
-  def toScreen(v: core.Vector): Point
+  def toScreen(v: core.Vector): Point = v
 
   def render(screen: Screen): Unit = {
     entities.foreach {
@@ -77,28 +74,25 @@ trait EntitySystemViewer extends EntityViewer {
 }
 
 class SectorViewer(val sector: Sector) extends EntitySystemViewer  {
-  def parent: EntityViewer = this
   def entities: Seq[Entity] = sector.starSystems
-  def toScreen(v: core.Vector): Point = v
 }
 
-class StarSystemViewer(val parent: EntityViewer, val starSystem: StarSystem) extends EntitySystemViewer {
+class StarSystemViewer(val starSystem: StarSystem) extends EntitySystemViewer {
   val consoleSize: Size = Size(40, 20)
   val entities = Seq(starSystem.star) ++ starSystem.planets
 
-  def toScreen(v: core.Vector): Point = {
+  override def toScreen(v: core.Vector): Point = {
     val rx = consoleSize.width / 2
     val ry = consoleSize.height / 2
 
     val r = core.Vector(v.x*rx, v.y*ry) / 100
 
     implicit def toInt(d: Double): Int = Math.floor(d).toInt
-    val p = Point(r.x + rx, r.y + ry)
-    p
+    Point(r.x + rx, r.y + ry)
   }
 }
 
-class PlanetViewer(val parent: EntityViewer, val planet: Planet) extends EntityViewer {
+class PlanetViewer(val planet: Planet) extends EntityViewer {
   val consoleSize: Size = Size(40, 20)
   val dx = consoleSize.width / 2
   val dy = consoleSize.height / 2

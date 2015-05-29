@@ -9,6 +9,7 @@ import scala.util.Random
  * Created by mtrupkin on 5/26/2015.
  */
 import Entity._
+import core.Vector
 
 class EntityBuilder(val typeID: String) {
   private var count = 0
@@ -29,38 +30,40 @@ class EntityBuilder(val typeID: String) {
     name.mkString
   }
 
-  def rndPosition(): core.Vector = core.Vector(Random.nextDouble()*40, Random.nextDouble()*20)
-  def rndVector(): core.Vector = core.Vector(Random.nextDouble()*100-50, Random.nextDouble()*100-50)
+  def rndPosition(): Vector = Vector(Random.nextDouble()*40, Random.nextDouble()*20)
+  def rndVector(): Vector = Vector(Random.nextDouble()*100-50, Random.nextDouble()*100-50)
 }
 
-class SectorBuilder extends EntityBuilder(SectorID) {
-  def apply(): Sector = {
-    val starSystemBuilder = new StarSystemBuilder
-    val starSystemCount = 30 + Random.nextInt(20)
-    val starSystems = for (i <- 0 to starSystemCount) yield starSystemBuilder.apply()
-
-    val sector = new Sector(nextID(), "Alpha", Points.Origin, starSystems)
-    sector
+object UniverseBuilder {
+  def apply(): Universe = {
+    new Universe(Seq(SectorBuilder(UniverseID)))
   }
 }
 
-class StarSystemBuilder extends EntityBuilder(StarSystemID) {
-  def apply(): StarSystem = {
+object SectorBuilder extends EntityBuilder(SectorID) {
+  def apply(parentID: String): Sector = {
+    val id = nextID()
+    val starSystemCount = 30 + Random.nextInt(20)
+    val starSystems = for (i <- 0 to starSystemCount) yield StarSystemBuilder(id)
+
+    new Sector(parentID, id, "Alpha", Points.Origin, starSystems)
+  }
+}
+
+object StarSystemBuilder extends EntityBuilder(StarSystemID) {
+  def apply(parentID: String): StarSystem = {
     val id = nextID()
 
-    val planetBuilder = new PlanetBuilder
-    val starBuilder = new StarBuilder(currentID())
-    val star = starBuilder.apply()
+    val star = StarBuilder(id, currentID())
 
     val planetCount = 2 + Random.nextInt(2)
-    val planets = for (i <- 0 to planetCount) yield planetBuilder.apply()
+    val planets = for (i <- 0 to planetCount) yield PlanetBuilder(id)
 
-    val starSystem = new StarSystem(id, rndName(), rndPosition(), star, planets)
-    starSystem
+    new StarSystem(parentID, id, rndName(), rndPosition(), star, planets)
   }
 }
 
-class StarBuilder(val id: Int) extends EntityBuilder(StarID) {
+object StarBuilder extends EntityBuilder(StarID) {
   def rndStarClass(): Char = {
     val rnd = Random.nextInt(7)
     rnd match {
@@ -74,13 +77,13 @@ class StarBuilder(val id: Int) extends EntityBuilder(StarID) {
     }
   }
 
-  def apply(): Star = {
-    new Star(s"$typeID-$id", rndName(), core.Vector(0, 0), rndStarClass())
+  def apply(parentID: String, id: Int): Star = {
+    new Star(parentID, s"$typeID-$id", rndName(), Vector(0, 0), rndStarClass())
   }
 }
 
-class PlanetBuilder extends EntityBuilder(PlanetID) {
-  def apply(): Planet = {
-    new Planet(nextID(), rndName(), rndVector())
+object PlanetBuilder extends EntityBuilder(PlanetID) {
+  def apply(parentID: String): Planet = {
+    new Planet(parentID, nextID(), rndName(), rndVector())
   }
 }

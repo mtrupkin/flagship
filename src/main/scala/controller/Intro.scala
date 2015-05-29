@@ -10,7 +10,7 @@ import javafx.util.Duration
 import me.mtrupkin.console.{ConsoleKey, Modifiers}
 import me.mtrupkin.core.{Point, Points, Size}
 import model.space.Universe
-import model.SectorBuilder
+import model.{UniverseBuilder, SectorBuilder}
 
 import scalafx.Includes._
 import scalafx.scene.{control => sfxc, input => sfxi, layout => sfxl}
@@ -41,10 +41,7 @@ trait Intro { self: MainController =>
     }
 
     def continueGame() = {
-      val sectorBuilder = new SectorBuilder()
-      val sector = sectorBuilder.apply()
-      val universe = new Universe(Seq(sector))
-      changeState(new GameController(universe))
+      changeState(new GameController(UniverseBuilder()))
     }
 
     def handleContinueGame(event: ActionEvent) = continueGame()
