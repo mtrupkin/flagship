@@ -34,8 +34,8 @@ trait Game { self: MainController =>
     @FXML var rootPane: Pane = _
     @FXML var entity1: Pane = _
     @FXML var entity1Controller: EntityController = _
-    @FXML var entity2: Pane = _
-    @FXML var entity2Controller: EntityController = _
+//    @FXML var entity2: Pane = _
+//    @FXML var entity2Controller: EntityController = _
 
     var entityID1: String = _
     var entityID2: String = _
@@ -58,19 +58,19 @@ trait Game { self: MainController =>
 
       entity1Controller.entitySelected.onChange({
         val id = entity1Controller.entitySelected.value.id
-        if (!world.locate(id).children.isEmpty) {
+//        if (!world.locate(id).children.isEmpty) {
           entityID1 = id
-        }
+//        }
 
       })
 
-      entity2Controller.entitySelected.onChange({
-        val entityID = entity2Controller.entitySelected.value.id
-        val parentID = world.locate(entityID).parent
-
-        entity1Controller.setEntity(world.locate(parentID))
-        entity2Controller.setEntity(world.locate(entityID))
-      })
+//      entity2Controller.entitySelected.onChange({
+//        val entityID = entity2Controller.entitySelected.value.id
+//        val parentID = world.locate(entityID).parent
+//
+//        entity1Controller.setEntity(world.locate(parentID))
+//        entity2Controller.setEntity(world.locate(entityID))
+//      })
 
       timer.start()
     }
@@ -80,7 +80,7 @@ trait Game { self: MainController =>
       world = world.update(elapsed)
 
       entity1Controller.setEntity(world.locate(entityID1))
-      entity2Controller.setEntity(world.locate(entityID2))
+//      entity2Controller.setEntity(world.locate(entityID2))
     }
 
     def handleKeyPressed(event: sfxi.KeyEvent): Unit = {
