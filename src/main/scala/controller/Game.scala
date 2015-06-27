@@ -9,7 +9,7 @@ import component.EntityController
 import me.mtrupkin.console._
 import me.mtrupkin.control.ConsoleFx
 import me.mtrupkin.core.{Point, Size}
-import model.space.{Entity, Universe}
+import model.space.{EntityBranch, EntityLeaf, Entity, Universe}
 import model.{SectorViewer, EntityViewer}
 
 import scala.util.{Failure, Success, Try}
@@ -50,27 +50,33 @@ trait Game { self: MainController =>
 
       entityID1 = world.sectors(0).id
       entityID2 = world.sectors(0).starSystems(0).id
-
+      update(0)
 
       entity1Controller.entityHighlighted.onChange({
         entityID2 = entity1Controller.entityHighlighted.value.id
       })
 
       entity1Controller.entitySelected.onChange({
-        val id = entity1Controller.entitySelected.value.id
-//        if (!world.locate(id).children.isEmpty) {
-          entityID1 = id
-//        }
+        val entityID = entity1Controller.entitySelected.value.id
+        val entity = world.locate(entityID)
+        entity match {
+          case branch:EntityBranch => entityID1 = entityID
+          case _ =>
 
       })
 
 //      entity2Controller.entitySelected.onChange({
 //        val entityID = entity2Controller.entitySelected.value.id
-//        val parentID = world.locate(entityID).parent
+        val entity = world.locate(entityID)
 //
-//        entity1Controller.setEntity(world.locate(parentID))
-//        entity2Controller.setEntity(world.locate(entityID))
-//      })
+        entity match {
+          case branch:EntityBranch => {
+            val parent = world.locate(branch.parent)
+            entity1Controller.setEntity(parent)
+            entity2Controller.setEntity(entity)
+          }
+          case _ =>
+        }
 
       timer.start()
     }
@@ -94,9 +100,17 @@ trait Game { self: MainController =>
         case ConsoleKey(k, _) => k match {
           case Space =>
           case Esc => {
-            if (world.locate(entityID1).parent != Entity.RootID) {
-              entityID2 = entityID1
-              entityID1 = world.locate(entityID1).parent
+            world.locate(entityID1) match {
+              case branch:EntityBranch  => {
+                val parent = world.locate(branch.parent)
+                parent match {
+                  case _: EntityBranch | _: EntityLeaf => {
+                    entityID2 = entityID1
+                    entityID1 = branch.parent
+                  }
+                  case _ =>
+                }
+              }
             }
           }
           case A =>

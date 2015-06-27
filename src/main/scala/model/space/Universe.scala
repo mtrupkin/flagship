@@ -7,43 +7,50 @@ import core.Vector
  */
 case class Universe(sectors: Seq[Sector], time: Long = 0) extends Entity {
   val children = sectors
-  val parent = Entity.RootID
-  val id = "U-1"
+  val id = "U"
   val name = "Universe"
   val position: Vector = Vector(0,0)
 
   def update(elapsed: Int): Universe = {
     new Universe(sectors.map(_.update(elapsed)), time + elapsed)
   }
-}
-
-trait Entity {
-  def parent: String
-  def children: Seq[Entity]
-  def name: String
-  def id: String
-  def position: Vector
-  def update(elapsed: Int): Entity
 
   def locate(id: String): Entity = {
     def locate(acc: Seq[Entity]): Entity = {
       acc match {
-        case head :: tail => if (head.id == id) head else locate(tail ++ head.children)
-        case Nil => ???
+        case (branch:EntityBranch) +: tail => if (branch.id == id) branch else locate(branch.children ++ tail)
+        case (entity:Entity) +: tail => if (entity.id == id) entity else locate(tail)
+        case _ => ???
       }
     }
-    locate(Seq(this))
+    locate(this +: children)
   }
 }
 
-case class Sector(parent: String, id: String, name: String, position: Vector, starSystems: Seq[StarSystem]) extends Entity {
+trait Entity {
+  def name: String
+  def id: String
+  def position: Vector
+  def update(elapsed: Int): Entity
+}
+
+trait EntityLeaf extends Entity {
+  def parent: String
+}
+
+trait EntityBranch extends Entity {
+  def parent: String
+  def children: Seq[Entity]
+}
+
+case class Sector(parent: String, id: String, name: String, position: Vector, starSystems: Seq[StarSystem]) extends EntityBranch {
   def children = starSystems
   def update(elapsed: Int): Sector = {
     copy(starSystems= starSystems.map(_.update(elapsed)))
   }
 }
 
-case class StarSystem(parent: String, id: String, name: String, position: Vector, star: Star, planets: Seq[Planet]) extends Entity {
+case class StarSystem(parent: String, id: String, name: String, position: Vector, star: Star, planets: Seq[Planet]) extends EntityBranch {
   def children = star +: planets
 
   def update(elapsed: Int): StarSystem = {
@@ -51,12 +58,12 @@ case class StarSystem(parent: String, id: String, name: String, position: Vector
   }
 }
 
-case class Star(parent: String, id: String, name: String, position: Vector, spectralType: Char) extends Entity {
+case class Star(parent: String, id: String, name: String, position: Vector, spectralType: Char) extends EntityLeaf {
   def children = Nil
   def update(elapsed: Int): Star = this
 }
 
-case class Planet(parent: String, id: String, name: String, position: Vector) extends Entity {
+case class Planet(parent: String, id: String, name: String, position: Vector) extends EntityLeaf {
   def children = Nil
   val period = 1500
   def update(elapsed: Int): Planet = {
@@ -67,7 +74,7 @@ case class Planet(parent: String, id: String, name: String, position: Vector) ex
   }
 }
 
-case class Ship(parent: String, id: String, name: String, position: Vector) extends Entity {
+case class Ship(parent: String, id: String, name: String, position: Vector) extends EntityLeaf {
   def children = Nil
   def update(elapsed: Int): Ship = this
 }
