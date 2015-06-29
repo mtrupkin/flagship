@@ -10,7 +10,6 @@ import model.space.Entity
  * Created by mtrupkin on 5/22/2015.
  */
 class EntityReadoutController {
-  @FXML var cursor: Label = _
   @FXML var position: Label = _
   @FXML var distance: Label = _
   @FXML var typeName: Label = _
@@ -23,10 +22,6 @@ class EntityReadoutController {
 
   implicit def toString(p: Point): String = {
     f"[${p.x} : ${p.y}]"
-  }
-
-  def updateCursor(p: Point): Unit = {
-    cursor.setText(p)
   }
 
   def update(entity: Entity): Unit = {

@@ -5,11 +5,11 @@ import javafx.scene.Parent
 import javafx.scene.control.Label
 import javafx.scene.layout.Pane
 
-import component.EntityController
+import component.{EntityReadoutController, EntityController}
 import me.mtrupkin.console._
 import me.mtrupkin.control.ConsoleFx
 import me.mtrupkin.core.{Point, Size}
-import model.space.{EntityBranch, EntityLeaf, Entity, Universe}
+import model.space.{EntityNode, EntityLeaf, Entity, Universe}
 import model.{SectorViewer, EntityViewer}
 
 import scala.util.{Failure, Success, Try}
@@ -32,13 +32,14 @@ trait Game { self: MainController =>
     }
 
     @FXML var rootPane: Pane = _
-    @FXML var entity1: Pane = _
-    @FXML var entity1Controller: EntityController = _
-//    @FXML var entity2: Pane = _
-//    @FXML var entity2Controller: EntityController = _
+    @FXML var entityView1: Pane = _
+    @FXML var entityView1Controller: EntityController = _
+    @FXML var entityView2: Pane = _
+    @FXML var entityView2Controller: EntityController = _
+    @FXML var targetReadoutController: EntityReadoutController = _
 
-    var entityID1: String = _
-    var entityID2: String = _
+    var entity1: Entity = _
+    var entity2: Entity = _
 
     def initialize(): Unit = {
       new sfxl.Pane(rootPane) {
@@ -47,36 +48,28 @@ trait Game { self: MainController =>
         }
       }
 
+      entity1 = world.sectors(0)
+      entity2 = world.sectors(0).starSystems(0)
 
-      entityID1 = world.sectors(0).id
-      entityID2 = world.sectors(0).starSystems(0).id
-      update(0)
-
-      entity1Controller.entityHighlighted.onChange({
-        entityID2 = entity1Controller.entityHighlighted.value.id
+      entityView1Controller.entityPrimarySelected.onChange({
+        entity2 = entityView1Controller.entityPrimarySelected.value
       })
 
-      entity1Controller.entitySelected.onChange({
-        val entityID = entity1Controller.entitySelected.value.id
-        val entity = world.locate(entityID)
-        entity match {
-          case branch:EntityBranch => entityID1 = entityID
-          case _ =>
-
+      entityView2Controller.entityPrimarySelected.onChange({
+        val newEntity = entityView2Controller.entityPrimarySelected.value
+        entity1 = entity2
+        entity2 = newEntity
       })
 
-//      entity2Controller.entitySelected.onChange({
-//        val entityID = entity2Controller.entitySelected.value.id
-        val entity = world.locate(entityID)
-//
-        entity match {
-          case branch:EntityBranch => {
-            val parent = world.locate(branch.parent)
-            entity1Controller.setEntity(parent)
-            entity2Controller.setEntity(entity)
-          }
-          case _ =>
-        }
+      entityView1Controller.entityHighlighted.onChange({
+        val entity = entityView1Controller.entityHighlighted.value
+        targetReadoutController.update(entity)
+      })
+
+      entityView2Controller.entityHighlighted.onChange({
+        val entity = entityView2Controller.entityHighlighted.value
+        targetReadoutController.update(entity)
+      })
 
       timer.start()
     }
@@ -85,8 +78,8 @@ trait Game { self: MainController =>
       // TODO: update and render at different rates
       world = world.update(elapsed)
 
-      entity1Controller.setEntity(world.locate(entityID1))
-//      entity2Controller.setEntity(world.locate(entityID2))
+      entityView1Controller.setEntity(world.locate(entity1.id))
+      entityView2Controller.setEntity(world.locate(entity2.id))
     }
 
     def handleKeyPressed(event: sfxi.KeyEvent): Unit = {
@@ -100,13 +93,13 @@ trait Game { self: MainController =>
         case ConsoleKey(k, _) => k match {
           case Space =>
           case Esc => {
-            world.locate(entityID1) match {
-              case branch:EntityBranch  => {
+            entity1 match {
+              case branch:EntityNode  => {
                 val parent = world.locate(branch.parent)
                 parent match {
-                  case _: EntityBranch | _: EntityLeaf => {
-                    entityID2 = entityID1
-                    entityID1 = branch.parent
+                  case _: EntityNode | _: EntityLeaf => {
+                    entity2 = entity1
+                    entity1 = world.locate(branch.parent)
                   }
                   case _ =>
                 }

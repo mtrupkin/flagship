@@ -11,19 +11,18 @@ import model.space.Entity
 
 import scalafx.Includes._
 import scalafx.beans.property.{ObjectProperty, Property}
+import scalafx.scene.input.MouseButton
 import scalafx.scene.{control => sfxc, input => sfxi, layout => sfxl, shape => sfxs, text => sfxt}
 
 /**
  * Created by mtrupkin on 5/22/2015.
  */
 class EntityController {
-//  @FXML var header: Label = _
   @FXML var consoleParent: Pane = _
-  @FXML var targetReadout: Pane = _
-  @FXML var targetReadoutController: EntityReadoutController = _
 
   val entityHighlighted = new ObjectProperty[Entity]
-  val entitySelected = new ObjectProperty[Entity]
+  val entityPrimarySelected = new ObjectProperty[Entity]
+  val entitySecondarySelected = new ObjectProperty[Entity]
 
   var console: ConsoleFx = _
   var screen: Screen = _
@@ -32,7 +31,7 @@ class EntityController {
 
   def initialize(): Unit = {
     val consoleSize = Size(40, 20)
-    console = new ConsoleFx(consoleSize, fontSize = 24)
+    console = new ConsoleFx(consoleSize, fontSize = 23)
     console.setStyle("-fx-border-color: white")
     screen = Screen(consoleSize)
 
@@ -63,7 +62,10 @@ class EntityController {
       s <- mouseToPoint(mouseEvent)
       target <- entityViewer.target(s)
     } {
-      entitySelected.update(target)
+      mouseEvent.button match {
+        case MouseButton.PRIMARY => entityPrimarySelected.update(target)
+        case MouseButton.SECONDARY => entitySecondarySelected.update(target)
+      }
     }
   }
 
@@ -71,13 +73,9 @@ class EntityController {
   }
 
   def updateMouseInfo(w: Point): Unit = {
-    targetReadoutController.updateCursor(w)
-
     for {
       target <- entityViewer.target(w)
     } {
-      targetReadoutController.update(target)
-
       entityHighlighted.update(target)
     }
   }

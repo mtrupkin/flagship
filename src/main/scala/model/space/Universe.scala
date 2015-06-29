@@ -5,20 +5,20 @@ import core.Vector
 /**
  * Created by mtrupkin on 5/4/2015.
  */
-case class Universe(sectors: Seq[Sector], time: Long = 0) extends Entity {
+case class Universe(sectors: Seq[Sector], ships: Seq[Ship], time: Long = 0) extends Entity {
   val children = sectors
   val id = "U"
   val name = "Universe"
   val position: Vector = Vector(0,0)
 
   def update(elapsed: Int): Universe = {
-    new Universe(sectors.map(_.update(elapsed)), time + elapsed)
+    new Universe(sectors.map(_.update(elapsed)), ships.map(_.update(elapsed)), time + elapsed)
   }
 
   def locate(id: String): Entity = {
     def locate(acc: Seq[Entity]): Entity = {
       acc match {
-        case (branch:EntityBranch) +: tail => if (branch.id == id) branch else locate(branch.children ++ tail)
+        case (branch:EntityNode) +: tail => if (branch.id == id) branch else locate(branch.children ++ tail)
         case (entity:Entity) +: tail => if (entity.id == id) entity else locate(tail)
         case _ => ???
       }
@@ -38,19 +38,19 @@ trait EntityLeaf extends Entity {
   def parent: String
 }
 
-trait EntityBranch extends Entity {
+trait EntityNode extends Entity {
   def parent: String
   def children: Seq[Entity]
 }
 
-case class Sector(parent: String, id: String, name: String, position: Vector, starSystems: Seq[StarSystem]) extends EntityBranch {
+case class Sector(parent: String, id: String, name: String, position: Vector, starSystems: Seq[StarSystem]) extends EntityNode {
   def children = starSystems
   def update(elapsed: Int): Sector = {
     copy(starSystems= starSystems.map(_.update(elapsed)))
   }
 }
 
-case class StarSystem(parent: String, id: String, name: String, position: Vector, star: Star, planets: Seq[Planet]) extends EntityBranch {
+case class StarSystem(parent: String, id: String, name: String, position: Vector, star: Star, planets: Seq[Planet]) extends EntityNode {
   def children = star +: planets
 
   def update(elapsed: Int): StarSystem = {
@@ -65,7 +65,7 @@ case class Star(parent: String, id: String, name: String, position: Vector, spec
 
 case class Planet(parent: String, id: String, name: String, position: Vector) extends EntityLeaf {
   def children = Nil
-  val period = 1500
+  val period = 20000
   def update(elapsed: Int): Planet = {
     val w = (2*Math.PI)/period
     val v = w*position.magnitude
@@ -75,7 +75,6 @@ case class Planet(parent: String, id: String, name: String, position: Vector) ex
 }
 
 case class Ship(parent: String, id: String, name: String, position: Vector) extends EntityLeaf {
-  def children = Nil
   def update(elapsed: Int): Ship = this
 }
 
@@ -91,6 +90,7 @@ object Entity {
   val RootID = "U"
 
   val UniverseID = "U"
+  val ShipID = "SP"
   val SectorID = "SE"
   val StarSystemID = "SS"
   val StarID = "ST"

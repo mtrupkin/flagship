@@ -36,7 +36,17 @@ class EntityBuilder(val typeID: String) {
 
 object UniverseBuilder {
   def apply(): Universe = {
-    new Universe(Seq(SectorBuilder(UniverseID)))
+    val sector = SectorBuilder(UniverseID)
+
+    val player = ShipBuilder(sector.starSystems(0).id)
+    new Universe(Seq(sector), Seq(player))
+  }
+}
+
+object ShipBuilder extends EntityBuilder(ShipID) {
+  def apply(parentID: String): Ship = {
+    val id = nextID()
+    Ship(parentID, id, "Enterprise", Points.Origin)
   }
 }
 

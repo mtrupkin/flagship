@@ -34,7 +34,11 @@ object EntityViewer {
         p
       }
       def render(screen: Screen): Unit = screen(toScreen(core.Vector(0, 0))) = draw(entity)
-      def target(p: Point): Option[Entity] =  if (toScreen(core.Vector(0, 0)) == p) Some(entity) else None
+      def target(p: Point): Option[Entity] = None
+//        if (toScreen(core.Vector(0, 0)) == p)
+//          Some(entity)
+//        else
+//          None
     }
   }
 

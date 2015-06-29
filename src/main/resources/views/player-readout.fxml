@@ -9,26 +9,17 @@
       <GridPane hgap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity">
         <columnConstraints>
           <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="100.0" />
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="175.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="175.0" />
         </columnConstraints>
         <rowConstraints>
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
         </rowConstraints>
          <children>
-            <Label text="Position:" GridPane.hgrow="NEVER" GridPane.rowIndex="2" />
-            <Label text="Distance:" GridPane.rowIndex="3" />
             <Label text="Type:" GridPane.rowIndex="1" />
-            <Label fx:id="position" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <Label fx:id="distance" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             <Label fx:id="typeName" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <Label text="ID:" GridPane.rowIndex="4" />
-            <Label fx:id="id" GridPane.columnIndex="1" GridPane.rowIndex="4" />
             <Label text="Name:" />
-            <Label fx:id="name" GridPane.columnIndex="1" />
+            <Label fx:id="cursor" GridPane.columnIndex="1" />
          </children>
       </GridPane>
    </children>
