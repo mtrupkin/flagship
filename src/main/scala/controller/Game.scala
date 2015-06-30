@@ -20,7 +20,7 @@ import scalafx.scene.{control => sfxc, input => sfxi, layout => sfxl, shape => s
  * Created by mtrupkin on 12/15/2014.
  */
 trait Game { self: MainController =>
-  class GameController(var world: Universe) extends ControllerState {
+  class GameController(var universe: Universe) extends ControllerState {
     val name = "main-game"
 
     override def root: Parent = {
@@ -48,8 +48,8 @@ trait Game { self: MainController =>
         }
       }
 
-      entity1 = world.sectors(0)
-      entity2 = world.sectors(0).starSystems(0)
+      entity1 = universe.sectors(0)
+      entity2 = universe.sectors(0).starSystems(0)
 
       entityView1Controller.entityPrimarySelected.onChange({
         entity2 = entityView1Controller.entityPrimarySelected.value
@@ -76,10 +76,10 @@ trait Game { self: MainController =>
 
     override def update(elapsed: Int): Unit = {
       // TODO: update and render at different rates
-      world = world.update(elapsed)
+      universe = universe.update(elapsed)
 
-      entityView1Controller.setEntity(world.locate(entity1.id))
-      entityView2Controller.setEntity(world.locate(entity2.id))
+      entityView1Controller.setEntity(universe.locate(entity1.id), universe.ships)
+      entityView2Controller.setEntity(universe.locate(entity2.id), universe.ships)
     }
 
     def handleKeyPressed(event: sfxi.KeyEvent): Unit = {
@@ -95,11 +95,11 @@ trait Game { self: MainController =>
           case Esc => {
             entity1 match {
               case branch:EntityNode  => {
-                val parent = world.locate(branch.parent)
+                val parent = universe.locate(branch.parent)
                 parent match {
                   case _: EntityNode | _: EntityLeaf => {
                     entity2 = entity1
-                    entity1 = world.locate(branch.parent)
+                    entity1 = universe.locate(branch.parent)
                   }
                   case _ =>
                 }

@@ -5,8 +5,14 @@ import core.Vector
 /**
  * Created by mtrupkin on 5/4/2015.
  */
+trait Entity {
+  def name: String
+  def id: String
+  def position: Vector
+  def update(elapsed: Int): Entity
+}
+
 case class Universe(sectors: Seq[Sector], ships: Seq[Ship], time: Long = 0) extends Entity {
-  val children = sectors
   val id = "U"
   val name = "Universe"
   val position: Vector = Vector(0,0)
@@ -23,15 +29,8 @@ case class Universe(sectors: Seq[Sector], ships: Seq[Ship], time: Long = 0) exte
         case _ => ???
       }
     }
-    locate(this +: children)
+    locate(this +: sectors)
   }
-}
-
-trait Entity {
-  def name: String
-  def id: String
-  def position: Vector
-  def update(elapsed: Int): Entity
 }
 
 trait EntityLeaf extends Entity {
@@ -59,12 +58,10 @@ case class StarSystem(parent: String, id: String, name: String, position: Vector
 }
 
 case class Star(parent: String, id: String, name: String, position: Vector, spectralType: Char) extends EntityLeaf {
-  def children = Nil
   def update(elapsed: Int): Star = this
 }
 
 case class Planet(parent: String, id: String, name: String, position: Vector) extends EntityLeaf {
-  def children = Nil
   val period = 20000
   def update(elapsed: Int): Planet = {
     val w = (2*Math.PI)/period
@@ -72,10 +69,6 @@ case class Planet(parent: String, id: String, name: String, position: Vector) ex
     val v0 = Vector(-position.y, position.x).normal(v)
     copy(position = position + v0)
   }
-}
-
-case class Ship(parent: String, id: String, name: String, position: Vector) extends EntityLeaf {
-  def update(elapsed: Int): Ship = this
 }
 
 object Entity {

@@ -7,7 +7,7 @@ import me.mtrupkin.console.Screen
 import me.mtrupkin.control.ConsoleFx
 import me.mtrupkin.core.{Size, Point}
 import model.EntityViewer
-import model.space.Entity
+import model.space.{Ship, Entity}
 
 import scalafx.Includes._
 import scalafx.beans.property.{ObjectProperty, Property}
@@ -43,11 +43,20 @@ class EntityController {
     consoleParent.setFocusTraversable(true)
   }
 
-  def setEntity(entity: Entity) {
+  def setEntity(entity: Entity, ships: Seq[Ship]) {
     screen.clear()
     this.entity = entity
     this.entityViewer = EntityViewer(entity)
     entityViewer.render(screen)
+
+    for {
+      ship <- ships
+      if entity.id == ship.parent
+    } {
+//      entityViewer.
+      EntityViewer(ship).render(screen)
+    }
+
     console.draw(screen)
   }
 

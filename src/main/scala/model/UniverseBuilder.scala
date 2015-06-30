@@ -43,13 +43,6 @@ object UniverseBuilder {
   }
 }
 
-object ShipBuilder extends EntityBuilder(ShipID) {
-  def apply(parentID: String): Ship = {
-    val id = nextID()
-    Ship(parentID, id, "Enterprise", Points.Origin)
-  }
-}
-
 object SectorBuilder extends EntityBuilder(SectorID) {
   def apply(parentID: String): Sector = {
     val id = nextID()
