@@ -7,47 +7,25 @@ import model.space._
 /**
  * Created by mtrupkin on 5/22/2015.
  */
-trait EntityViewer {
-  def render(screen: Screen): Unit
-  def target(p: Point): Option[Entity]
-}
 
 object EntityViewer {
-  def apply(entity: Entity): EntityViewer = entity match {
-    case sector: Sector => new EntitySystemViewer {
-      def entities: Seq[Entity] = sector.children
-    }
-
-    case starSystem: StarSystem => new StarSystemViewer(starSystem)
-    case planet: Planet => new PlanetViewer(planet)
-    case e => new EntityViewer {
-      val consoleSize: Size = Size(40, 20)
-
-       def toScreen(v: core.Vector): Point = {
-        val rx = consoleSize.width / 2
-        val ry = consoleSize.height / 2
-
-        val r = core.Vector(v.x*rx, v.y*ry) / 100
-
-        implicit def toInt(d: Double): Int = Math.floor(d).toInt
-        val p = Point(r.x + rx, r.y + ry)
-        p
-      }
-      def render(screen: Screen): Unit = screen(toScreen(core.Vector(0, 0))) = draw(entity)
-      def target(p: Point): Option[Entity] = None
-//        if (toScreen(core.Vector(0, 0)) == p)
-//          Some(entity)
-//        else
-//          None
+  def apply(entity: Entity, ships: Seq[Ship]): EntityViewer = {
+    entity match {
+      case sector: Sector => new SectorViewer(sector, ships)
+      case starSystem: StarSystem => new StarSystemViewer(starSystem, ships)
+      case planet: Planet => new PlanetViewer(planet, ships)
+      case star: Star => ???
     }
   }
 
   def draw(entity: Entity): ScreenChar = entity match {
-    case starSystem: StarSystem => ScreenChar('*', starColor(starSystem.star.spectralType))
-    case star: Star => ScreenChar('*', starColor(star.spectralType))
+    case starSystem: StarSystem => draw(starSystem.star)
+    case star: Star => draw(star)
     case _: Planet => 'O'
     case _ => ' '
   }
+
+  def draw(star: Star): ScreenChar = ScreenChar('*', starColor(star.spectralType))
 
   def starColor(starClass: Char): RGB = {
     starClass match {
@@ -62,13 +40,29 @@ object EntityViewer {
   }
 }
 
+trait EntityViewer {
+  val consoleSize: Size = Size(40, 20)
+  def ships: Seq[Ship]
+  def render(screen: Screen): Unit
+  def target(p: Point): Option[Entity]
+}
+
 trait EntitySystemViewer extends EntityViewer {
   def entities: Seq[Entity]
+
+  def draw(entity: Entity): ScreenChar = {
+    val sc = EntityViewer.draw(entity)
+    if (ships.exists(ship => entity.id == ship.parent)) {
+      //sc.copy(bg = Colors.LightGrey)
+      sc.copy(fg = RGB(255,165,0))
+    } else sc
+  }
+
   def toScreen(v: core.Vector): Point = v
 
   def render(screen: Screen): Unit = {
     entities.foreach {
-      e => screen(toScreen(e.position)) = EntityViewer.draw(e)
+      e => screen(toScreen(e.position)) = draw(e)
     }
   }
 
@@ -77,12 +71,11 @@ trait EntitySystemViewer extends EntityViewer {
   }
 }
 
-class SectorViewer(val sector: Sector) extends EntitySystemViewer  {
+class SectorViewer(val sector: Sector, val ships: Seq[Ship]) extends EntitySystemViewer  {
   def entities: Seq[Entity] = sector.starSystems
 }
 
-class StarSystemViewer(val starSystem: StarSystem) extends EntitySystemViewer {
-  val consoleSize: Size = Size(40, 20)
+class StarSystemViewer(val starSystem: StarSystem, val ships: Seq[Ship]) extends EntitySystemViewer {
   val entities = Seq(starSystem.star) ++ starSystem.planets
 
   override def toScreen(v: core.Vector): Point = {
@@ -96,11 +89,10 @@ class StarSystemViewer(val starSystem: StarSystem) extends EntitySystemViewer {
   }
 }
 
-class PlanetViewer(val planet: Planet) extends EntityViewer {
-  val consoleSize: Size = Size(40, 20)
+class PlanetViewer(val planet: Planet, val ships: Seq[Ship]) extends EntityViewer {
+
   val dx = consoleSize.width / 2
   val dy = consoleSize.height / 2
-
 
   def toScreen(v: core.Vector): Point = {
     val r = core.Vector(v.x*dx, v.y*dy) / 100
@@ -112,13 +104,6 @@ class PlanetViewer(val planet: Planet) extends EntityViewer {
   def viewerToScreen(p: Point): Point = (p.x + dx, -p.y + dy)
 
   def render(screen: Screen): Unit = {
-//    for {
-//      x <- 0 until consoleSize.width
-//      y <- 0 until consoleSize.height
-//    } {
-//      screen(Point(dx, y)) = '.'
-//      screen(Point(x, dy)) = '.'
-//    }
     val r = 6
     for {
       x0 <- -r to r

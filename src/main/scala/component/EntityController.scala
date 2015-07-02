@@ -26,7 +26,6 @@ class EntityController {
 
   var console: ConsoleFx = _
   var screen: Screen = _
-  var entity: Entity = _
   var entityViewer: EntityViewer = _
 
   def initialize(): Unit = {
@@ -45,17 +44,9 @@ class EntityController {
 
   def setEntity(entity: Entity, ships: Seq[Ship]) {
     screen.clear()
-    this.entity = entity
-    this.entityViewer = EntityViewer(entity)
-    entityViewer.render(screen)
+    this.entityViewer = EntityViewer(entity, ships)
 
-    for {
-      ship <- ships
-      if entity.id == ship.parent
-    } {
-//      entityViewer.
-      EntityViewer(ship).render(screen)
-    }
+    entityViewer.render(screen)
 
     console.draw(screen)
   }
