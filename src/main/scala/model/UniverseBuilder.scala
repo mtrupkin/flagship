@@ -39,7 +39,7 @@ object UniverseBuilder {
     val sector = SectorBuilder(UniverseID)
 
     val player = ShipBuilder(sector.starSystems(0).id)
-    new Universe(Seq(sector), Seq(player))
+    new Universe(Seq(sector), player, Nil)
   }
 }
 

@@ -11,7 +11,6 @@ resolvers ++= Seq(
 )
 
 libraryDependencies ++= Seq(
-  "com.typesafe.akka" %% "akka-actor" % "2.3.9",
-  "com.typesafe.akka" %% "akka-testkit" % "2.3.9" % "test",
-  "me.mtrupkin.console" %% "console-fx" % "1.0-SNAPSHOT"
+  "me.mtrupkin.console" %% "console-fx" % "1.0-SNAPSHOT",
+  "me.mtrupkin.console" %% "console-core" % "0.8-SNAPSHOT"
 )

@@ -7,7 +7,7 @@ import me.mtrupkin.console.Screen
 import me.mtrupkin.control.ConsoleFx
 import me.mtrupkin.core.{Size, Point}
 import model.EntityViewer
-import model.space.{Ship, Entity}
+import model.space.{Coordinate, Ship, Entity}
 
 import scalafx.Includes._
 import scalafx.beans.property.{ObjectProperty, Property}
@@ -22,7 +22,7 @@ class EntityController {
 
   val entityHighlighted = new ObjectProperty[Entity]
   val entityPrimarySelected = new ObjectProperty[Entity]
-  val entitySecondarySelected = new ObjectProperty[Entity]
+  val secondarySelected = new ObjectProperty[Coordinate]
 
   var console: ConsoleFx = _
   var screen: Screen = _
@@ -42,9 +42,9 @@ class EntityController {
     consoleParent.setFocusTraversable(true)
   }
 
-  def setEntity(entity: Entity, ships: Seq[Ship]) {
+  def setEntity(entity: Entity, player: Ship) {
     screen.clear()
-    this.entityViewer = EntityViewer(entity, ships)
+    this.entityViewer = EntityViewer(entity, player)
 
     entityViewer.render(screen)
 
@@ -64,7 +64,16 @@ class EntityController {
     } {
       mouseEvent.button match {
         case MouseButton.PRIMARY => entityPrimarySelected.update(target)
-        case MouseButton.SECONDARY => entitySecondarySelected.update(target)
+        case _ =>
+      }
+    }
+    for {
+      s <- mouseToPoint(mouseEvent)
+      target = entityViewer.toWorld(s)
+    } {
+      mouseEvent.button match {
+        case MouseButton.SECONDARY => secondarySelected.update(Coordinate(entityViewer.id, target))
+        case _ =>
       }
     }
   }

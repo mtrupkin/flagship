@@ -1,5 +1,6 @@
 package model
 
+import dynamics.Arrive
 import me.mtrupkin.console.{Colors, RGB, Screen, ScreenChar}
 import me.mtrupkin.core.{Points, Point, Size}
 import model.space._
@@ -9,11 +10,11 @@ import model.space._
  */
 
 object EntityViewer {
-  def apply(entity: Entity, ships: Seq[Ship]): EntityViewer = {
+  def apply(entity: Entity, player: Ship): EntityViewer = {
     entity match {
-      case sector: Sector => new SectorViewer(sector, ships)
-      case starSystem: StarSystem => new StarSystemViewer(starSystem, ships)
-      case planet: Planet => new PlanetViewer(planet, ships)
+      case sector: Sector => new SectorViewer(sector, player)
+      case starSystem: StarSystem => new StarSystemViewer(starSystem, player)
+      case planet: Planet => new PlanetViewer(planet, player)
       case star: Star => ???
     }
   }
@@ -41,63 +42,83 @@ object EntityViewer {
 }
 
 trait EntityViewer {
+  implicit def toInt(d: Double): Int = Math.floor(d).toInt
   val consoleSize: Size = Size(40, 20)
-  def ships: Seq[Ship]
+
+  def id: String
+  def player: Ship
   def render(screen: Screen): Unit
   def target(p: Point): Option[Entity]
+  def toWorld(p: Point): core.Vector = p
+  def toScreen(v: core.Vector): Point = v
 }
 
-trait EntitySystemViewer extends EntityViewer {
-  def entities: Seq[Entity]
+trait EntityNodeViewer extends EntityViewer {
+  def entityNode: EntityNode
+  def id: String = entityNode.id
 
   def draw(entity: Entity): ScreenChar = {
     val sc = EntityViewer.draw(entity)
-    if (ships.exists(ship => entity.id == ship.parent)) {
-      //sc.copy(bg = Colors.LightGrey)
-      sc.copy(fg = RGB(255,165,0))
+    if (entity.id == player.parent) {
+      sc.copy(fg = RGB(255,165,0), bg = Colors.LightGrey)
     } else sc
   }
 
-  def toScreen(v: core.Vector): Point = v
-
   def render(screen: Screen): Unit = {
-    entities.foreach {
+    entityNode.children.foreach {
       e => screen(toScreen(e.position)) = draw(e)
+    }
+
+    if (entityNode.id == player.parent) {
+      screen(toScreen(player.position)) = ScreenChar('@')
+      player.moveState match {
+        case Arrive(Coordinate(_, target)) => screen(toScreen(target)) = ScreenChar(' ', bg = Colors.Green)
+        case _ =>
+      }
     }
   }
 
   def target(p: Point): Option[Entity] = {
-    entities.find( e => toScreen(e.position) == p)
+    entityNode.children.find( e => toScreen(e.position) == p)
   }
 }
 
-class SectorViewer(val sector: Sector, val ships: Seq[Ship]) extends EntitySystemViewer  {
-  def entities: Seq[Entity] = sector.starSystems
+class SectorViewer(
+  val sector: Sector,
+  val player: Ship) extends EntityNodeViewer  {
+  def entityNode = sector
 }
 
-class StarSystemViewer(val starSystem: StarSystem, val ships: Seq[Ship]) extends EntitySystemViewer {
-  val entities = Seq(starSystem.star) ++ starSystem.planets
+class StarSystemViewer(
+  val starSystem: StarSystem,
+  val player: Ship) extends EntityNodeViewer {
+
+  val rx = consoleSize.width / 2
+  val ry = consoleSize.height / 2
+
+  val entityNode = starSystem
+
+  override def toWorld(p: Point): core.Vector =  {
+    val r = core.Vector(p.x - rx, ry - p.y)
+    core.Vector(r.x / rx, r.y / ry) * 100
+  }
 
   override def toScreen(v: core.Vector): Point = {
-    val rx = consoleSize.width / 2
-    val ry = consoleSize.height / 2
-
     val r = core.Vector(v.x*rx, v.y*ry) / 100
 
-    implicit def toInt(d: Double): Int = Math.floor(d).toInt
-    Point(r.x + rx, r.y + ry)
+    Point(r.x + rx, ry - r.y)
   }
 }
 
-class PlanetViewer(val planet: Planet, val ships: Seq[Ship]) extends EntityViewer {
-
+class PlanetViewer(
+  val planet: Planet,
+  val player: Ship) extends EntityViewer {
+  def id = planet.id
   val dx = consoleSize.width / 2
   val dy = consoleSize.height / 2
 
-  def toScreen(v: core.Vector): Point = {
+  override def toScreen(v: core.Vector): Point = {
     val r = core.Vector(v.x*dx, v.y*dy) / 100
-
-    implicit def toInt(d: Double): Int = Math.floor(d).toInt
     Point(r.x + dx, r.y + dy)
   }
 

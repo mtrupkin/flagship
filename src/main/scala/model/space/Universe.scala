@@ -12,13 +12,17 @@ trait Entity {
   def update(elapsed: Int): Entity
 }
 
-case class Universe(sectors: Seq[Sector], ships: Seq[Ship], time: Long = 0) extends Entity {
+case class Coordinate(parent: String, position: Vector) {
+  def -(p: Coordinate): Coordinate = ??? //Coordinate(x - p.x, y - p.y)
+}
+
+case class Universe(sectors: Seq[Sector], player: Ship, ships: Seq[Ship], time: Long = 0) extends Entity {
   val id = "U"
   val name = "Universe"
   val position: Vector = Vector(0,0)
 
   def update(elapsed: Int): Universe = {
-    new Universe(sectors.map(_.update(elapsed)), ships.map(_.update(elapsed)), time + elapsed)
+    new Universe(sectors.map(_.update(elapsed)), player.update(elapsed), ships.map(_.update(elapsed)), time + elapsed)
   }
 
   def locate(id: String): Entity = {
@@ -88,4 +92,16 @@ object Entity {
   val StarSystemID = "SS"
   val StarID = "ST"
   val PlanetID = "PL"
+
+  def contains(entity: EntityNode, id: String): Boolean = {
+    def contains(acc: Seq[Entity]): Boolean = {
+      acc match {
+        case (node: EntityNode) +: tail => if (node.id == id) true else contains(node.children ++ tail)
+        case (entity: Entity) +: tail => contains(tail)
+        case Nil => false
+      }
+    }
+
+    contains(entity +: entity.children)
+  }
 }

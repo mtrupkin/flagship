@@ -6,10 +6,11 @@ import javafx.scene.control.Label
 import javafx.scene.layout.Pane
 
 import component.{EntityReadoutController, EntityController}
+import dynamics.Arrive
 import me.mtrupkin.console._
 import me.mtrupkin.control.ConsoleFx
 import me.mtrupkin.core.{Point, Size}
-import model.space.{EntityNode, EntityLeaf, Entity, Universe}
+import model.space._
 import model.{SectorViewer, EntityViewer}
 
 import scala.util.{Failure, Success, Try}
@@ -71,6 +72,12 @@ trait Game { self: MainController =>
         targetReadoutController.update(entity)
       })
 
+
+      entityView2Controller.secondarySelected.onChange({
+        val target = entityView2Controller.secondarySelected.value
+        universe = universe.copy(player = universe.player.copy(moveState = Arrive(target)))
+      })
+
       timer.start()
     }
 
@@ -78,8 +85,8 @@ trait Game { self: MainController =>
       // TODO: update and render at different rates
       universe = universe.update(elapsed)
 
-      entityView1Controller.setEntity(universe.locate(entity1.id), universe.ships)
-      entityView2Controller.setEntity(universe.locate(entity2.id), universe.ships)
+      entityView1Controller.setEntity(universe.locate(entity1.id), universe.player)
+      entityView2Controller.setEntity(universe.locate(entity2.id), universe.player)
     }
 
     def handleKeyPressed(event: sfxi.KeyEvent): Unit = {
